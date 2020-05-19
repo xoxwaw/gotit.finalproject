@@ -1,4 +1,6 @@
 .idea/
 venv/
-.pyc
+*.pyc
+*.pyo
+__pycache__/
 main/config/.env
