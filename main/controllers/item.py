@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 
-from main.models.item import ItemModel
+from main.models.item import ItemModel, item_schema, items_schema
 
 
 items = Blueprint('items', __name__, url_prefix='/items')
@@ -8,6 +8,7 @@ items = Blueprint('items', __name__, url_prefix='/items')
 
 @items.route('/', methods=['GET'])
 def get_items():
+
     pass
 
 

@@ -1,4 +1,4 @@
-from main.db import db
+from main.db import db, ma
 from main.models.db_action_mixin import DBActionMixin
 from main.constants import CATEGORY_NAME_LEN
 
@@ -16,3 +16,12 @@ class CategoryModel(db.Model, DBActionMixin):
 
     def __init__(self, **kwargs):
         super(CategoryModel, self).__init__(**kwargs)
+
+
+class CategorySchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'name', 'description')
+
+
+category_schema = CategorySchema(strict=True)
+categories_schema = CategorySchema(strict=True, many=True)

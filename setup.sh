@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-virtualenv venv --python=/usr/local/bin/python3.6
+virtualenv venv --python=/usr/local/bin/python3.7
 source venv/bin/activate
 mysql.server restart
 
