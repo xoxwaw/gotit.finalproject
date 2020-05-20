@@ -28,6 +28,6 @@ def test_auth_user():
     client.post('/register', data=json.dumps(data))
     response = client.post('/auth', data=json.dumps(data))
     data = json.loads(response.get_data(as_text=True))
-    assert data['access_token'].count('.') == 2
+    assert data.get('access_token', "").count('.') == 2
 
 

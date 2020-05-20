@@ -1,4 +1,4 @@
-from main.db import db, ma
+from main.db import db
 from main.constants import ITEM_NAME_LEN
 from main.models.db_action_mixin import DBActionMixin
 
@@ -17,12 +17,3 @@ class ItemModel(db.Model, DBActionMixin):
 
     def __init__(self, **kwargs):
         super(ItemModel, self).__init__(**kwargs)
-
-
-class ItemSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'name', 'description', 'category_id')
-
-
-item_schema = ItemSchema(strict=True)
-items_schema = ItemSchema(strict=True, many=True)
