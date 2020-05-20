@@ -33,6 +33,8 @@ class ItemSchema(Schema):
             updated_at=dt.utcnow()
         )
 
+item_schema = ItemSchema()
+items_schema = ItemSchema(many=True)
 
 
 

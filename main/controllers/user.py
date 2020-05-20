@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from main.models.user import UserModel
+from main.schema.user import user_schema
 
 
 users = Blueprint("users", __name__, url_prefix='/')

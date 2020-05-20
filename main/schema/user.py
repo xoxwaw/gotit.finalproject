@@ -21,3 +21,5 @@ class UserSchema(Schema):
             created_at=dt.utcnow(),
             updated_at=dt.utcnow()
         )
+
+user_schema = UserSchema()

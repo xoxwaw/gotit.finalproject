@@ -1,33 +1,19 @@
 import pytest
-import json
 
-from main import create_app
-
-
-def create_new_user():
-    app = create_app()
-    client = app.test_client()
-    data = {
-        "user": "test_user",
-        "password": "test_password"
-    }
-    response = client.post('/register', data=json.dumps(data))
-    data = json.loads(response.get_data(as_text=True))
-    assert response.status_code == 201
-    assert data['message'] == 'OK'
+from main.db import db
+from tests.helper import login
 
 
-def test_auth_user():
-    app = create_app()
-    client = app.test_client()
+def test_register(client, app):
+    client.post('/register', data={
+        'username': 'user_test', 'password': 'password'})
+    with app.app_context():
+        assert db.engine.execute(
+            "SELECT * FROM users WHERE username='user_test'"
+        ).fetchone() is not None
 
-    data = {
-        "user": "test_user",
-        "password": "test_password"
-    }
-    client.post('/register', data=json.dumps(data))
-    response = client.post('/auth', data=json.dumps(data))
-    data = json.loads(response.get_data(as_text=True))
+
+def test_auth(client, app):
+    data = login(client, 'user_test', 'password')
     assert data.get('access_token', "").count('.') == 2
-
 

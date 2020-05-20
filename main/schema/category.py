@@ -30,3 +30,6 @@ class CategorySchema(Schema):
             created_at=dt.utcnow(),
             updated_at=dt.utcnow()
         )
+
+category_schema = CategorySchema()
+categories_schema = CategorySchema(many=True)

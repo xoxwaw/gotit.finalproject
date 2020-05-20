@@ -1,7 +1,8 @@
 import logging
 
-from flask import Blueprint, request
-from main.models.category import CategoryModel, categories_schema, category_schema
+from flask import Blueprint, request, jsonify
+from main.schema.category import category_schema, categories_schema
+from main.models.category import CategoryModel
 
 
 categories = Blueprint('categories', __name__, url_prefix='/categories')
@@ -15,17 +16,18 @@ def get_categories():
     query = CategoryModel.query
     if name:
         query = query.filter_by(name)
-    results = query.paginate(page, per_page, error_out=False)
-    return categories_schema.jsonify(results.items)
+    results = query.order_by(CategoryModel.created_at.desc())\
+        .paginate(page, per_page, error_out=False)
+    return jsonify(categories_schema.dump(results.items))
     
 
 
 @categories.route('<int:id>', methods=['GET'])
 def get_category_with_id(id):
-    result = CategoryModel.query.filter_by(id=id).first()
+    result = CategoryModel.get(CategoryModel.id == id)
     if not result:
         return {'message': 'category with id {} does not exist'.format(id)}, 404
-    return category_schema.jsonify(result)
+    return jsonify(category_schema.dump(result))
 
 
 @categories.route('/<int:id>', methods=['POST'])
