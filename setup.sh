@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 virtualenv venv --python=/usr/local/bin/python3.7
 source venv/bin/activate
+pip install -r requirements.txt
 mysql.server restart
 
 # specify these fields

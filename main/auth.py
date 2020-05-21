@@ -1,18 +1,21 @@
 import os
 import datetime as dt
+from functools import wraps
+import sys
 
 import jwt
+from flask import request, jsonify
 
 from main.models.user import UserModel
 from main.libs.password import verify_password
 
-algorithms = ['HS256']
+algorithm = 'HS256'
 secret = os.getenv('JWT_SECRET_KEY')
 
-def payload(encoded_jwt):
+def get_payload(encoded_jwt):
     """decode a jwt token to payload"""
-    payload = jwt.decode(encoded_jwt, secret, algorithms)
-    return payload['identity']
+    payload = jwt.decode(encoded_jwt, secret, algorithm)
+    return payload
 
 
 def encode_jwt(id):
@@ -22,7 +25,7 @@ def encode_jwt(id):
         'iat': dt.datetime.utcnow(),
         'identity': id
     }
-    return jwt.encode(payload, secret, algorithms)
+    return jwt.encode(payload, secret, algorithm)
 
 
 def authenticate(username, password):
@@ -35,3 +38,19 @@ def authenticate(username, password):
 def identity(payload):
     id = payload['identity']
     return UserModel.find_by_id(id)
+
+
+def jwt_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        jwt = request.headers.get('Authorization')
+        if not jwt:
+            return jsonify({'Unauthenticated'}), 401
+        access_token = jwt.split()[1]
+        payload = get_payload(access_token)
+        if not identity(payload):
+            return jsonify({'Wrong credentials'}), 401
+        return f(payload.get('identity'), *args, **kwargs)
+    return wrap
+
+

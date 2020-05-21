@@ -1,8 +1,12 @@
 import logging
+import sys
 
 from flask import Blueprint, request, jsonify
+from marshmallow import ValidationError
+
 from main.schema.category import category_schema, categories_schema
 from main.models.category import CategoryModel
+from main.auth import jwt_required
 
 
 categories = Blueprint('categories', __name__, url_prefix='/categories')
@@ -30,16 +34,30 @@ def get_category_with_id(id):
     return jsonify(category_schema.dump(result))
 
 
-@categories.route('/<int:id>', methods=['POST'])
-def post_category():
-    pass
+
+@categories.route('/', methods=['POST'])
+@jwt_required
+def post_category(user_id):
+    data = request.get_json()
+    data['creator_id'] = user_id
+    try:
+        category = category_schema.load(data)
+        print(category, file=sys.stderr)
+    except ValidationError as err:
+        return jsonify(err.messages), 422
+
+    category = CategoryModel(**data)
+    category.save_to_db(category)
+    return jsonify({'message': 'category with name {} has been successfully created'.format(data.get('name'))}), 201
 
 
 @categories.route('/<id>', methods=['PUT'])
+@jwt_required
 def update_category(id):
     pass
 
 
 @categories.route('/<id>', methods=['DELETE'])
+@jwt_required
 def delete_category(id):
     pass

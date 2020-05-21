@@ -1,6 +1,7 @@
 import hashlib
 import binascii
-import os
+import random
+import string
 
 from main.constants import SALT_LEN
 
@@ -11,9 +12,10 @@ SEED = 10000
 def encoder(password):
     """Hash a password for storing.
     """
-    salt = os.urandom(SALT_LEN)
+    salt = ''.join(random.choices(string.ascii_uppercase + string.digits, k=SALT_LEN))
+
     pwdhash = hashlib.pbkdf2_hmac(ALGORITHM, password.encode('utf-8'),
-                                  salt, SEED)
+                                  salt.encode('utf-8'), SEED)
     pwdhash = binascii.hexlify(pwdhash)
     return pwdhash.decode('ascii'), salt
 
@@ -23,6 +25,6 @@ def verify_password(stored_pwd, salt, provided_pwd):
     """
     pwdhash = hashlib.pbkdf2_hmac(ALGORITHM,
                                   provided_pwd.encode('utf-8'),
-                                  salt, SEED)
+                                  salt.encode('utf-8'), SEED)
     pwdhash = binascii.hexlify(pwdhash).decode('ascii')
     return pwdhash == stored_pwd
