@@ -30,7 +30,7 @@ def get_item_with_id(id):
     result = ItemModel.query.get(id)
     if not result:
         return {'message': 'item with id {} does not exist'.format(id)}, 404
-    return jsonify(items_output_schema.dump(result).data)
+    return jsonify(item_output_schema.dump(result).data)
 
 
 @items.route('/', methods=['POST'])

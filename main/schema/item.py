@@ -3,7 +3,7 @@ import sys
 
 from marshmallow import Schema, fields, validate, post_load, post_dump
 from main.schema.user import UserSchema
-from main.schema.category import CategorySchema
+from main.schema.category import CategoryInputSchema, CategoryOutputSchema
 from main.models.item import ItemModel
 
 
@@ -16,7 +16,7 @@ class ItemOutputSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(validate=validate.Length(min=3, max=128), required=True)
     description = fields.Nested(ItemDescriptionSchema)
-    category_id = fields.Nested(CategorySchema, only=('id', 'name'))
+    category_id = fields.Nested(CategoryInputSchema, only=('id', 'name'))
     creator_id = fields.Nested(UserSchema, only=('id', 'username'))
     created_at = fields.DateTime(required=True)
     updated_at = fields.DateTime(required=True)
@@ -39,9 +39,7 @@ class ItemInputSchema(Schema):
             name=data['name'],
             description=data.get('description'),
             category_id=data.get('category_id'),
-            creator_id=data['creator_id'],
-            created_at=dt.utcnow(),
-            updated_at=dt.utcnow()
+            creator_id=data['creator_id']
         )
 
 

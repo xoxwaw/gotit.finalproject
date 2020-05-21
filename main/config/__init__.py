@@ -8,9 +8,6 @@ from main.config.dev import DevEnv
 from main.config.test import TestEnv
 
 
-
-
-
 def load(app, env):
     if env == 'TESTING':
         config = TestEnv()

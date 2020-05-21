@@ -27,4 +27,3 @@ echo "DB_PASSWORD=$db_password" >> ./main/config/.env
 echo "JWT_SECRET_KEY=$jwt_secret" >> ./main/config/.env
 
 echo "main/config/.env" >> ./.gitignore
-

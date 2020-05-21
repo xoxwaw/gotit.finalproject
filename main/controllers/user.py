@@ -1,12 +1,11 @@
 from datetime import datetime as dt
-import sys
 
 from flask import Blueprint, request, jsonify
 
-from main.schema.user import user_schema
 from main.models.user import UserModel
-from main.libs.password import encoder
+from main.libs.password import encoder, verify_password
 from main.auth import encode_jwt
+from main.auth import jwt_required
 
 
 users = Blueprint("users", __name__, url_prefix='/')
@@ -45,5 +44,15 @@ def auth():
 
 
 @users.route('/password', methods=['PUT'])
-def password():
-    pass
+@jwt_required
+def password(id):
+    user = UserModel.query.get(id)
+    data = request.get_json()
+    if not verify_password(user.hashed_password, user.salt, data.get('old_password')):
+        return jsonify({'message': 'Wrong password'}), 400
+    hashed_password, salt = encoder(data.get('new_password'))
+    user.hashed_password = hashed_password
+    user.salt = salt
+    UserModel.save_to_db(user)
+    return '', 204
+
