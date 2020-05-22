@@ -1,6 +1,6 @@
 from datetime import datetime as dt
 
-from marshmallow import Schema, fields, validate, post_load, pre_load
+from marshmallow import Schema, fields, validate, post_load
 
 from main.schema.user import UserSchema
 from main.models.category import CategoryModel
@@ -19,15 +19,12 @@ class CategoryOutputSchema(Schema):
     created_at = fields.DateTime( dump_only=True)
     updated_at = fields.DateTime( dump_only=True)
 
-    @post_load
-    def make_object(self, data, **kwargs):
-        if not data:
-            return None
-        return CategoryModel(
-            name=data['name'],
-            description=data.get('description', None),
-            creator_id=data.get('creator_id'),
-        )
+    class Meta:
+        model = CategoryModel
+
+
+
+
 
 
 class CategoryInputSchema(Schema):
@@ -37,6 +34,16 @@ class CategoryInputSchema(Schema):
     creator= fields.Integer()
     created_at = fields.DateTime( dump_only=True)
     updated_at = fields.DateTime( dump_only=True)
+
+    @post_load
+    def make_object(self, data, **kwargs):
+        if not data:
+            return None
+        return CategoryModel(
+            name=data['name'],
+            description=data.get('description', None),
+            creator_id=data.get('creator_id'),
+        )
 
 
 category_input_schema = CategoryInputSchema()

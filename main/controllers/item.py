@@ -66,7 +66,7 @@ def update_item(user_id, id):
             for key in data:
                 setattr(item, key, data[key])
         else:
-            return jsonify({'Unauthorized to modify the content of this item'}), 403
+            return jsonify({'message':'Unauthorized to modify the content of this item'}), 403
     else:
         item = ItemModel(**data)
     item.save_to_db(item)
@@ -79,7 +79,7 @@ def delete_item(user_id, id):
     item = ItemModel.query.get(id)
     if not item:
         return jsonify({'message': 'item with id {} does not exist'.format(id)}), 404
-    if item.id != user_id:
+    if item.creator_id != user_id:
         return jsonify({'message':'Unauthorized to modify the content of this item'}), 403
     ItemModel.delete_from_db(item)
     return '', 204

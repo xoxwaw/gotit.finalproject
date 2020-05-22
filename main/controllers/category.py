@@ -66,7 +66,7 @@ def update_category(user_id, id):
             for key in data:
                 setattr(category, key, data[key])
         else:
-            return jsonify({'Unauthorized to modify the content of this item'}), 403
+            return jsonify({'message':'Unauthorized to modify the content of this item'}), 403
     else:
         category = CategoryModel(**data)
     CategoryModel.save_to_db(category)
@@ -78,9 +78,9 @@ def update_category(user_id, id):
 def delete_category(user_id, id):
     category = CategoryModel.query.get(id)
     if not category:
-        return jsonify({'Category with id {} does not exist'.format(id)}), 404
+        return jsonify({'message':'Category with id {} does not exist'.format(id)}), 404
     if category.creator_id != user_id:
-        return jsonify({'Unauthorized to modify this category'}), 403
+        return jsonify({'message':'Unauthorized to modify this category'}), 403
     ItemModel.query.filter(ItemModel.category_id == category.id).delete()
     CategoryModel.delete_from_db(category)
     return '', 204

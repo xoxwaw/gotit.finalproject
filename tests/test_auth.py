@@ -12,7 +12,7 @@ def test_register(client, app):
         'Accept': mimetype
     }
     response = client.post('/register', data=json.dumps({
-        'username': 'user_test', 'password': 'password'
+        'username': 'user_test_new', 'password': TEST_PASSWORD
     }), headers=headers)
     with app.app_context():
         assert db.engine.execute(
