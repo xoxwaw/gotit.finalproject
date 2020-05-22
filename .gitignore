@@ -1,7 +1,3 @@
 .idea/
 venv/
-**/*.pyc
-**/*.pyo
-**/__pycache__
-main/config/.env
-**/.pytest_cache/
+.env
