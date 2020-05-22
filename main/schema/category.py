@@ -27,8 +27,6 @@ class CategoryOutputSchema(Schema):
             name=data['name'],
             description=data.get('description', None),
             creator_id=data.get('creator_id'),
-            created_at=dt.utcnow(),
-            updated_at=dt.utcnow()
         )
 
 

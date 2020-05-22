@@ -1,12 +1,19 @@
 import pytest
+import json
 
 from main.db import db
-from tests.helper import login
+from tests.helpers import login, post_category, TEST_USERNAME, TEST_PASSWORD
 
 
 def test_register(client, app):
-    client.post('/register', data={
-        'username': 'user_test', 'password': 'password'})
+    mimetype = 'application/json'
+    headers = {
+        'Content-Type': mimetype,
+        'Accept': mimetype
+    }
+    response = client.post('/register', data=json.dumps({
+        'username': 'user_test', 'password': 'password'
+    }), headers=headers)
     with app.app_context():
         assert db.engine.execute(
             "SELECT * FROM users WHERE username='user_test'"
@@ -14,6 +21,18 @@ def test_register(client, app):
 
 
 def test_auth(client, app):
-    data = login(client, 'user_test', 'password')
-    assert data.get('access_token', "").count('.') == 2
+    token = login(client, TEST_USERNAME, TEST_PASSWORD)
+    assert token.count('.') == 2
+
+
+def test_wrong_token_format(client, app):
+    data = {'name': 'phone book'}
+    status_code = post_category(client, "", data)
+    assert status_code == 400
+
+def test_incorrect_access_token(client, app):
+    data = {'name': 'phone book'}
+    token = login(client, TEST_USERNAME, TEST_PASSWORD)
+    status_code = post_category(client, token + 'a', data)
+    assert status_code == 401
 

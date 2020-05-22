@@ -1,14 +1,19 @@
 import pytest
 
 from main.db import db
-from tests.helper import login, post_category, TEST_USERNAME, TEST_PASSWORD
+from tests.helpers import (
+    login,
+    post_category,
+    delete_category,
+    update_category,
+    TEST_USERNAME,
+    TEST_PASSWORD
+)
 
 
-def test_create(client, app):
-    data = login(client, TEST_USERNAME, TEST_PASSWORD)
-    access_token = data.get('access_token', '')
-    assert access_token.count('.') == 2
-    data = {'name': 'test_category', 'creator_id': 1}
+def test_post_category(client, app):
+    access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
+    data = {'name': 'test_category'}
     status_code = post_category(client, access_token, data)
     assert status_code == 201
     with app.app_context():
@@ -17,3 +22,21 @@ def test_create(client, app):
         ).fetchone() is not None
 
 
+def test_update_category(client, app):
+    access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
+    data = {
+        'name': 'modified_name'
+    }
+    id = 1
+    status_code = update_category(client, access_token, id, data)
+    assert status_code == 204
+    with app.app_context():
+        category = db.session.execute(
+            'SELECT * FROM categories WHERE id={}'.format(id)
+        ).fetchone()
+        assert category.name == 'modified_name'
+
+def test_delete_category(client, app):
+    access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
+    status_code = delete_category(client, access_token, 1)
+    assert status_code == 204

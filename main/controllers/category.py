@@ -61,7 +61,6 @@ def update_category(user_id, id):
     except ValidationError as err:
         return jsonify(err.messages), 422
     category = CategoryModel.query.get(id)
-    data['updated_at'] = dt.datetime.utcnow()
     if category:
         if category.creator_id == user_id:
             for key in data:
@@ -69,7 +68,6 @@ def update_category(user_id, id):
         else:
             return jsonify({'Unauthorized to modify the content of this item'}), 403
     else:
-        data['created_at'] = dt.datetime.utcnow()
         category = CategoryModel(**data)
     CategoryModel.save_to_db(category)
     return '', 204

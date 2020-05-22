@@ -18,8 +18,6 @@ class UserSchema(Schema):
             username=data['username'],
             hashed_password=data['hashed_password'],
             salt=data['salt'],
-            created_at=dt.utcnow(),
-            updated_at=dt.utcnow()
         )
 
 user_schema = UserSchema()

@@ -22,7 +22,11 @@ def get_items():
         query = query.filter_by(name)
     results = query.order_by(ItemModel.created_at.desc()) \
         .paginate(page, per_page, error_out=False)
-    return jsonify(items_output_schema.dump(results.items).data)
+    return jsonify({
+        'items': items_output_schema.dump(results.items).data,
+        'pages': results.pages,
+        'total': results.total
+    })
 
 
 @items.route('/<id>', methods=['GET'])
@@ -38,8 +42,6 @@ def get_item_with_id(id):
 def post_item(user_id):
     data = request.get_json()
     data['creator_id']=user_id
-    data['created_at']=dt.datetime.utcnow()
-    data['updated_at']=dt.datetime.utcnow()
     try:
         item = item_input_schema.load(data)
         print(item, file=sys.stderr)
@@ -59,7 +61,6 @@ def update_item(user_id, id):
     except ValidationError as err:
         return jsonify(err.messages), 422
     item = ItemModel.query.get(id)
-    data['updated_at'] = dt.datetime.utcnow()
     if item:
         if item.creator_id == user_id:
             for key in data:
@@ -67,7 +68,6 @@ def update_item(user_id, id):
         else:
             return jsonify({'Unauthorized to modify the content of this item'}), 403
     else:
-        data['created_at'] = dt.datetime.utcnow()
         item = ItemModel(**data)
     item.save_to_db(item)
     return '', 204
@@ -80,6 +80,8 @@ def delete_item(user_id, id):
     if not item:
         return jsonify({'message': 'item with id {} does not exist'.format(id)}), 404
     if item.id != user_id:
-        return jsonify({'Unauthorized to modify the content of this item'}), 403
+        return jsonify({'message':'Unauthorized to modify the content of this item'}), 403
     ItemModel.delete_from_db(item)
     return '', 204
+
+

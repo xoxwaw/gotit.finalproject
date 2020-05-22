@@ -2,7 +2,7 @@ from main.db import db
 from main import create_app
 
 
-app = create_app('DEV')
+app = create_app('dev')
 
 
 @app.before_first_request

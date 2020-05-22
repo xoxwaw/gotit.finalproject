@@ -4,6 +4,7 @@ from functools import wraps
 import sys
 
 import jwt
+from jwt.exceptions import InvalidSignatureError
 from flask import request, jsonify
 
 from main.models.user import UserModel
@@ -43,13 +44,18 @@ def identity(payload):
 def jwt_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        jwt = request.headers.get('Authorization')
-        if not jwt:
-            return jsonify({'Unauthenticated'}), 401
-        access_token = jwt.split()[1]
-        payload = get_payload(access_token)
+        jwt_token = request.headers.get('Authorization')
+        if not jwt_token:
+            return jsonify({'message':'Unauthenticated'}), 401
+        if len(jwt_token.split()) != 2 or not jwt_token.startswith('JWT'):
+            return jsonify({'message':'Wrong token format'}), 400
+        access_token = jwt_token.split()[1]
+        try:
+            payload = jwt.decode(access_token, secret, algorithm)
+        except InvalidSignatureError:
+            return jsonify({'message': 'Invalid token'}), 401
         if not identity(payload):
-            return jsonify({'Wrong credentials'}), 401
+            return jsonify({'message':'Wrong credentials'}), 401
         return f(payload.get('identity'), *args, **kwargs)
     return wrap
 
