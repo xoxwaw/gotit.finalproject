@@ -15,8 +15,6 @@ class ItemOutputSchema(Schema):
     description = fields.Nested(ItemDescriptionSchema)
     category = fields.Nested(CategoryInputSchema, only=('id', 'name', 'description'))
     user = fields.Nested(UserSchema)
-    created_at = fields.DateTime()
-    updated_at = fields.DateTime()
 
 
 class ItemInputSchema(Schema):
@@ -25,8 +23,6 @@ class ItemInputSchema(Schema):
     description = fields.Nested(ItemDescriptionSchema)
     category_id = fields.Integer()
     creator_id = fields.Integer()
-    created_at = fields.DateTime(required=True)
-    updated_at = fields.DateTime(required=True)
 
 
 item_input_schema = ItemInputSchema()

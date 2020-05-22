@@ -19,14 +19,13 @@ def get_categories():
     name = request.args.get('name')
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    try:
-        validate = category_validation_schema.load({
+    validate = category_validation_schema.load({
             'name': name,
             'page': page,
             'per_page': per_page
         })
-    except ValidationError:
-        return jsonify({'message': 'Wrong query format'}), 400
+    if len(validate.errors) > 0:
+        return jsonify(validate.errors), 400
     query = CategoryModel.query
     if name:
         query = query.filter_by(name=name)
@@ -48,10 +47,9 @@ def get_category_with_id(id):
 def post_category(user_id):
     data = request.get_json()
     user = UserModel.query.get(user_id)
-    try:
-        category = category_input_schema.load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
+    validate = category_input_schema.load(data)
+    if len(validate.errors) > 0:
+        return jsonify(validate.errors), 422
     category = CategoryModel(user=user, **data)
     category.save_to_db(category)
     return jsonify({'message': 'category with name {} has been successfully created'.format(data.get('name'))}), 201
@@ -61,10 +59,9 @@ def post_category(user_id):
 @jwt_required
 def update_category(user_id, id):
     data = request.get_json()
-    try:
-        category = category_input_schema.load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
+    validate = category_input_schema.load(data)
+    if len(validate.errors) > 0:
+        return jsonify(validate.errors), 422
     category = CategoryModel.query.get(id)
     if category:
         if category.creator_id != user_id:

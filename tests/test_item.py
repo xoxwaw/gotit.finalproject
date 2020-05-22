@@ -55,7 +55,6 @@ def test_unauthorized_access_update_item(client, app):
     status_code = update_item(client, access_token, id, data)
     assert status_code == 403
 
-
 def test_unauthorized_assign_category_of_item(client, app):
     access_token = login(client, TEST_UNAUTH_USER, TEST_PASSWORD)
     data = {
@@ -64,3 +63,13 @@ def test_unauthorized_assign_category_of_item(client, app):
     }
     status_code = post_item(client, access_token, data)
     assert status_code == 403
+
+
+def test_post_invalid_format_category(client, app):
+    access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
+    data = {
+        'name': 'new category',
+        'category_id': 'hello'
+    }
+    status_code = post_item(client, access_token, data)
+    assert status_code == 422

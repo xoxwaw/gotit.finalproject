@@ -54,3 +54,12 @@ def test_unauthorized_access_update_category(client, app):
     id = 8
     status_code = update_category(client, access_token, id, data)
     assert status_code == 403
+
+
+def test_invalid_format_post_category(client, app):
+    access_token = login(client, TEST_UNAUTH_USER, TEST_PASSWORD)
+    data = {
+        'name': 0
+    }
+    status_code = post_category(client, access_token, data)
+    assert status_code == 422

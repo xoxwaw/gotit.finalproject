@@ -17,15 +17,14 @@ def get_items():
     category_id = request.args.get('category_id')
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    try:
-        validation = item_validation_schema.load({
-            'name': name,
-            'category_id': category_id,
-            'page': page,
-            'per_page': per_page,
-        })
-    except ValidationError:
-        return jsonify({'message': 'Wrong query format'}), 400
+    validate = item_validation_schema.load({
+        'name': name,
+        'category_id': category_id,
+        'page': page,
+        'per_page': per_page,
+    })
+    if len(validate.errors) > 0:
+        return jsonify(validate.errors), 400
     query = ItemModel.query
     if name:
         query = query.filter_by(name)
@@ -52,10 +51,9 @@ def get_item_with_id(id):
 @jwt_required
 def post_item(user_id):
     data = request.get_json()
-    try:
-        item = item_input_schema.load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
+    validate = item_input_schema.load(data)
+    if len(validate.errors) > 0:
+        return jsonify(validate.errors), 422
     user = UserModel.query.get(user_id)
     category_id = data.get('category_id')
     category = None
@@ -73,10 +71,9 @@ def post_item(user_id):
 @jwt_required
 def update_item(user_id, id):
     data = request.get_json()
-    try:
-        item = item_input_schema.load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
+    validate = item_input_schema.load(data)
+    if len(validate.errors) > 0:
+        return jsonify(validate.errors), 422
     item = ItemModel.query.get(id)
     if item:  # if item exists
         category_id = data.get('category_id')

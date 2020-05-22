@@ -13,10 +13,9 @@ users = Blueprint("users", __name__, url_prefix='/')
 @users.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    try:
-        user_validation_schema.load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 400
+    validate = user_validation_schema.load(data)
+    if len(validate.errors) > 0:
+        return jsonify(validate.errors), 400
     user = UserModel.find_by_username(data.get('username'))
     if user:
         return jsonify({'message': 'user with username {} has already existed'.
@@ -34,10 +33,9 @@ def register():
 @users.route('/auth', methods=['POST'])
 def auth():
     data = request.get_json()
-    try:
-        user_validation_schema.load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 400
+    validate = user_validation_schema.load(data)
+    if len(validate.errors) > 0:
+        return jsonify(validate.errors), 400
     user = UserModel.find_by_username(data.get('username'))
     if not user:
         return jsonify({'message': 'invalid username or password'}), 401
