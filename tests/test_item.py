@@ -55,6 +55,7 @@ def test_unauthorized_access_update_item(client, app):
     status_code = update_item(client, access_token, id, data)
     assert status_code == 403
 
+
 def test_unauthorized_assign_category_of_item(client, app):
     access_token = login(client, TEST_UNAUTH_USER, TEST_PASSWORD)
     data = {
