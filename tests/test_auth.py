@@ -1,4 +1,3 @@
-import pytest
 import json
 
 from main.db import db
@@ -30,9 +29,9 @@ def test_wrong_token_format(client, app):
     status_code = post_category(client, "", data)
     assert status_code == 400
 
+
 def test_incorrect_access_token(client, app):
     data = {'name': 'phone book'}
     token = login(client, TEST_USERNAME, TEST_PASSWORD)
     status_code = post_category(client, token + 'a', data)
     assert status_code == 401
-

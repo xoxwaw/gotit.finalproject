@@ -12,8 +12,8 @@ class ItemModel(db.Model, DBActionMixin):
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    store = db.relationship('CategoryModel')
-    user = db.relationship('UserModel')
+    category = db.relationship('CategoryModel', lazy='joined', backref='categories')
+    user = db.relationship('UserModel', lazy='joined', backref='users')
 
     def __init__(self, **kwargs):
         super(ItemModel, self).__init__(**kwargs)

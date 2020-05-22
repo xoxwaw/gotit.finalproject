@@ -25,5 +25,3 @@ def client(app):
 @pytest.fixture(scope='session')
 def runner(app):
     return app.test_cli_runner()
-
-

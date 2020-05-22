@@ -1,5 +1,3 @@
-import pytest
-
 from main.db import db
 from tests.helpers import (
     login,
@@ -35,6 +33,7 @@ def test_update_category(client, app):
             'SELECT * FROM categories WHERE id={}'.format(id)
         ).fetchone()
         assert category.name == 'modified_name'
+
 
 def test_delete_category(client, app):
     access_token = login(client, TEST_USERNAME, TEST_PASSWORD)

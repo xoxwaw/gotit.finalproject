@@ -11,6 +11,9 @@ class UserModel(db.Model, DBActionMixin):
     hashed_password = db.Column(db.String(HASHED_PASSWORD_LEN))
     salt = db.Column(db.String(SALT_LEN))
 
+    category = db.relationship('CategoryModel', lazy='joined', backref='users')
+    item = db.relationship('ItemModel', lazy='joined', backref='users')
+
     def __init__(self, **kwargs):
         for key, val in kwargs.items():
             setattr(self, key, val)

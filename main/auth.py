@@ -13,6 +13,7 @@ from main.libs.password import verify_password
 algorithm = 'HS256'
 secret = os.getenv('JWT_SECRET_KEY')
 
+
 def get_payload(encoded_jwt):
     """decode a jwt token to payload"""
     payload = jwt.decode(encoded_jwt, secret, algorithm)
@@ -46,17 +47,16 @@ def jwt_required(f):
     def wrap(*args, **kwargs):
         jwt_token = request.headers.get('Authorization')
         if not jwt_token:
-            return jsonify({'message':'Unauthenticated'}), 401
+            return jsonify({'message': 'Unauthenticated'}), 401
         if len(jwt_token.split()) != 2 or not jwt_token.startswith('JWT'):
-            return jsonify({'message':'Wrong token format'}), 400
+            return jsonify({'message': 'Wrong token format'}), 400
         access_token = jwt_token.split()[1]
         try:
             payload = jwt.decode(access_token, secret, algorithm)
         except InvalidSignatureError:
             return jsonify({'message': 'Invalid token'}), 401
         if not identity(payload):
-            return jsonify({'message':'Wrong credentials'}), 401
+            return jsonify({'message': 'Wrong credentials'}), 401
         return f(payload.get('identity'), *args, **kwargs)
+
     return wrap
-
-

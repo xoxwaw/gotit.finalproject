@@ -6,7 +6,6 @@ from main.models.item import ItemModel
 from main.models.user import UserModel
 from main.libs.password import encoder
 
-
 TEST_USERNAME = 'user_test'
 TEST_PASSWORD = 'password'
 
@@ -16,6 +15,7 @@ headers = {
     'Accept': mimetype,
     'Authorization': 'JWT '
 }
+
 
 def login(client, username, password):
     response = client.post('/auth', data=json.dumps({
@@ -28,7 +28,7 @@ def login(client, username, password):
 def post_item(client, access_token, data):
     headers['Authorization'] = 'JWT ' + access_token
     response = client.post('/items/', headers=headers,
-                data=json.dumps(data))
+                           data=json.dumps(data))
     return response.status_code
 
 
@@ -68,21 +68,17 @@ def create_category(data):
         name=data['name'],
         description=data.get('description', None),
         creator_id=data['creator_id'],
-        created_at=dt.utcnow(),
-        updated_at=dt.utcnow()
     )
     CategoryModel.save_to_db(category)
 
 
 def create_item(data):
     item = ItemModel(
-            name=data['name'],
-            description=data.get('description', ""),
-            category_id=data.get('category_id'),
-            creator_id=data['creator_id'],
-            created_at=dt.utcnow(),
-            updated_at=dt.utcnow()
-        )
+        name=data['name'],
+        description=data.get('description', ""),
+        category_id=data.get('category_id'),
+        creator_id=data['creator_id']
+    )
     ItemModel.save_to_db(item)
 
 
@@ -91,8 +87,6 @@ def create_user(data):
     user = UserModel(
         username=data['username'],
         hashed_password=hashed_password,
-        salt=salt,
-        created_at=dt.utcnow(),
-        updated_at=dt.utcnow()
+        salt=salt
     )
     UserModel.save_to_db(user)

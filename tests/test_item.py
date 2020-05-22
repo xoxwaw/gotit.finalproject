@@ -1,5 +1,3 @@
-import pytest
-
 from main.db import db
 from tests.helpers import (
     TEST_PASSWORD,
@@ -35,6 +33,7 @@ def test_update_item(client, app):
             'SELECT * FROM items WHERE id={}'.format(id)
         ).fetchone()
         assert item.name == 'modified_name'
+
 
 def test_delete_item(client, app):
     access_token = login(client, TEST_USERNAME, TEST_PASSWORD)

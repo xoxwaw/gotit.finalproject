@@ -20,4 +20,5 @@ class UserSchema(Schema):
             salt=data['salt'],
         )
 
+
 user_schema = UserSchema()

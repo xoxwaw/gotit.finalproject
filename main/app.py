@@ -1,7 +1,6 @@
 from main.db import db
 from main import create_app
 
-
 app = create_app('dev')
 
 

@@ -7,7 +7,6 @@ from tests.helpers import (
 )
 
 
-
 def populate_data():
     user = {
         'username': 'user_test',
@@ -27,5 +26,3 @@ def populate_data():
             'category_id': i % 10 + 1,
         }
         create_item(item)
-
-
