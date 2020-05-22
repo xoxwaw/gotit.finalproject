@@ -1,11 +1,10 @@
 from main.db import db
+from tests import TEST_UNAUTH_USER, TEST_PASSWORD, TEST_USERNAME
 from tests.helpers import (
     login,
     post_category,
     delete_category,
     update_category,
-    TEST_USERNAME,
-    TEST_PASSWORD
 )
 
 
@@ -39,3 +38,19 @@ def test_delete_category(client, app):
     access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
     status_code = delete_category(client, access_token, 1)
     assert status_code == 204
+
+
+def test_unauthorized_access_delete_category(client, app):
+    access_token = login(client, TEST_UNAUTH_USER, TEST_PASSWORD)
+    status_code = delete_category(client, access_token, 3)
+    assert status_code == 403
+
+
+def test_unauthorized_access_update_category(client, app):
+    access_token = login(client, TEST_UNAUTH_USER, TEST_PASSWORD)
+    data = {
+        'name': 'modified_name'
+    }
+    id = 8
+    status_code = update_category(client, access_token, id, data)
+    assert status_code == 403

@@ -61,6 +61,9 @@ def post_item(user_id):
     category = None
     if category_id:
         category = CategoryModel.query.get(category_id)
+        if category and category.creator_id != user_id:
+            return jsonify({'message': 'unauthorized to assign item to category {}'
+                           .format(category.name)}), 403
     item = ItemModel(user=user, category=category, **data)
     ItemModel.save_to_db(item)
     return jsonify({'message': 'item with name {} has been successfully created'.format(data.get('name'))}), 201
@@ -76,16 +79,15 @@ def update_item(user_id, id):
         return jsonify(err.messages), 422
     item = ItemModel.query.get(id)
     if item:  # if item exists
-        category_id = data.get('category')
+        category_id = data.get('category_id')
         if category_id:
             category = CategoryModel.query.get(category_id)
             if category and category.creator_id != user_id:
                 return jsonify({'message': 'Unauthorized to change the category of this item'}), 403
-        if item.creator_id == user_id:
-            for key in data:
-                setattr(item, key, data[key])
-        else:
+        if item.creator_id != user_id:
             return jsonify({'message': 'Unauthorized to modify the content of this item'}), 403
+        for key in data:
+            setattr(item, key, data[key])
     else:
         item = ItemModel(**data)
     item.save_to_db(item)

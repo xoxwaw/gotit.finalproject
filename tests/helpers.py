@@ -1,13 +1,9 @@
 import json
-from datetime import datetime as dt
 
+from main.libs.password import encoder
 from main.models.category import CategoryModel
 from main.models.item import ItemModel
 from main.models.user import UserModel
-from main.libs.password import encoder
-
-TEST_USERNAME = 'user_test'
-TEST_PASSWORD = 'password'
 
 mimetype = 'application/json'
 headers = {

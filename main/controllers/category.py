@@ -67,11 +67,10 @@ def update_category(user_id, id):
         return jsonify(err.messages), 422
     category = CategoryModel.query.get(id)
     if category:
-        if category.creator_id == user_id:
-            for key in data:
-                setattr(category, key, data[key])
-        else:
+        if category.creator_id != user_id:
             return jsonify({'message': 'Unauthorized to modify the content of this item'}), 403
+        for key in data:
+            setattr(category, key, data[key])
     else:
         category = CategoryModel(**data)
     CategoryModel.save_to_db(category)

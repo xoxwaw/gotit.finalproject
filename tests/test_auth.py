@@ -1,7 +1,8 @@
 import json
 
 from main.db import db
-from tests.helpers import login, post_category, TEST_USERNAME, TEST_PASSWORD
+from tests import TEST_USERNAME, TEST_PASSWORD, TEST_UNAUTH_USER
+from tests.helpers import login, post_category
 
 
 def test_register(client, app):
@@ -11,7 +12,7 @@ def test_register(client, app):
         'Accept': mimetype
     }
     response = client.post('/register', data=json.dumps({
-        'username': 'user_test_new', 'password': TEST_PASSWORD
+        'username': TEST_UNAUTH_USER, 'password': TEST_PASSWORD
     }), headers=headers)
     with app.app_context():
         assert db.engine.execute(
