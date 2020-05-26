@@ -1,24 +1,22 @@
-from datetime import datetime as dt
+from marshmallow import Schema, fields, validate
 
-from marshmallow import Schema, fields, validate, post_load
+from main.constants import USERNAME_LENGTH, PASSWORD_LENGTH
 
-from main.models.user import UserModel
+
+MIN_USERNAME_LENGTH = 6
+MIN_PASSWORD_LENGTH = 6
 
 
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
-    username = fields.Str(validate=validate.Length(min=6, max=30))
-    password = fields.Str(load_only=True)
+    username = fields.Str(validate=validate.Length(min=MIN_USERNAME_LENGTH, max=USERNAME_LENGTH))
+    password = fields.Str(load_only=True, validate=validate.Length(min=MIN_PASSWORD_LENGTH, max=PASSWORD_LENGTH))
 
-    @post_load
-    def make_object(self, data, **kwargs):
-        if not data:
-            return None
-        return UserModel(
-            username=data['username'],
-            hashed_password=data['hashed_password'],
-            salt=data['salt'],
-        )
+
+class UserPostValidationSchema(Schema):
+    username = fields.Str(validate=validate.Length(min=MIN_USERNAME_LENGTH, max=USERNAME_LENGTH))
+    password = fields.Str(validate=validate.Length(min=MIN_PASSWORD_LENGTH, max=PASSWORD_LENGTH))
 
 
 user_schema = UserSchema()
+user_post_validation_schema = UserPostValidationSchema()

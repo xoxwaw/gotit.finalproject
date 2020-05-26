@@ -1,6 +1,6 @@
 import json
 
-from main.libs.password import encoder
+from main.libs.password import hash_password
 from main.models.category import CategoryModel
 from main.models.item import ItemModel
 from main.models.user import UserModel
@@ -79,7 +79,7 @@ def create_item(data):
 
 
 def create_user(data):
-    hashed_password, salt = encoder(data['password'])
+    hashed_password, salt = hash_password(data['password'])
     user = UserModel(
         username=data['username'],
         hashed_password=hashed_password,

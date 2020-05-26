@@ -3,28 +3,28 @@ import binascii
 import random
 import string
 
-from main.constants import SALT_LEN
+from main.constants import SALT_LENGTH
 
 ALGORITHM = 'sha512'
 SEED = 10000
 
 
-def encoder(password):
+def hash_password(password):
     """Hash a password for storing.
     """
-    salt = ''.join(random.choices(string.ascii_uppercase + string.digits, k=SALT_LEN))
+    salt = ''.join(random.choices(string.ascii_uppercase + string.digits, k=SALT_LENGTH))
 
-    pwdhash = hashlib.pbkdf2_hmac(ALGORITHM, password.encode('utf-8'),
+    hashed_password = hashlib.pbkdf2_hmac(ALGORITHM, password.encode('utf-8'),
                                   salt.encode('utf-8'), SEED)
-    pwdhash = binascii.hexlify(pwdhash)
-    return pwdhash.decode('ascii'), salt
+    hashed_password = binascii.hexlify(hashed_password)
+    return hashed_password.decode('ascii'), salt
 
 
-def verify_password(stored_pwd, salt, provided_pwd):
+def verify_password(password, hashed_password, salt):
     """Verify a stored password against one provided by user.
     """
-    pwdhash = hashlib.pbkdf2_hmac(ALGORITHM,
-                                  provided_pwd.encode('utf-8'),
+    hashed = hashlib.pbkdf2_hmac(ALGORITHM,
+                                  password.encode('utf-8'),
                                   salt.encode('utf-8'), SEED)
-    pwdhash = binascii.hexlify(pwdhash).decode('ascii')
-    return pwdhash == stored_pwd
+    hashed = binascii.hexlify(hashed).decode('ascii')
+    return hashed == hashed_password

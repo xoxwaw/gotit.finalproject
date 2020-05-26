@@ -1,7 +1,11 @@
 from marshmallow import Schema, fields, validate
+
 from main.schemas.user import UserSchema
+from main.constants import ITEM_NAME_LENGTH
 from main.schemas.category import CategoryInputSchema
 
+
+MIN_ITEM_NAME_LENGTH = 3
 
 class ItemDescriptionSchema(Schema):
     image_url = fields.URL()
@@ -10,8 +14,8 @@ class ItemDescriptionSchema(Schema):
 
 
 class ItemOutputSchema(Schema):
-    id = fields.Int(dump_only=True)
-    name = fields.Str(validate=validate.Length(min=3, max=128), required=True)
+    id = fields.Int()
+    name = fields.Str(validate=validate.Length(min=MIN_ITEM_NAME_LENGTH, max=ITEM_NAME_LENGTH), required=True)
     description = fields.Nested(ItemDescriptionSchema)
     category = fields.Nested(CategoryInputSchema, only=('id', 'name', 'description'))
     user = fields.Nested(UserSchema)
@@ -19,7 +23,7 @@ class ItemOutputSchema(Schema):
 
 class ItemInputSchema(Schema):
     id = fields.Int(dump_only=True)
-    name = fields.Str(validate=validate.Length(min=3, max=128), required=True)
+    name = fields.Str(validate=validate.Length(min=MIN_ITEM_NAME_LENGTH, max=ITEM_NAME_LENGTH), required=True)
     description = fields.Nested(ItemDescriptionSchema)
     category_id = fields.Integer()
     creator_id = fields.Integer()

@@ -33,7 +33,7 @@ Inside the mysql cli, you now should create 2 databases - one for testing and th
 
 `CREATE DATABASE IF NOT EXISTS test_final_project;`
 
-Additionally, you can create a separate user for this application. 
+**Optionally**, you can create a separate user for this application. 
 
 `CREATE USER IF NOT EXISTS 'final_project_user'@'localhost';`
 

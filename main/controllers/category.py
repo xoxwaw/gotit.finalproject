@@ -1,15 +1,11 @@
-import datetime as dt
-import sys
-
 from flask import Blueprint, request, jsonify
-from marshmallow import ValidationError
 
-from main.schemas.category import category_input_schema, categories_output_schema, category_output_schema
-from main.schemas.validations.category import category_validation_schema
+from main.auth import jwt_required
 from main.models.category import CategoryModel
 from main.models.item import ItemModel
 from main.models.user import UserModel
-from main.auth import jwt_required
+from main.schemas.category import category_input_schema, categories_output_schema, category_output_schema
+from main.schemas import query_validation_schema
 
 categories = Blueprint('categories', __name__, url_prefix='/categories')
 
@@ -19,11 +15,11 @@ def get_categories():
     name = request.args.get('name')
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
-    validate = category_validation_schema.load({
-            'name': name,
-            'page': page,
-            'per_page': per_page
-        })
+    validate = query_validation_schema.load({
+        'name': name,
+        'page': page,
+        'per_page': per_page
+    })
     if len(validate.errors) > 0:
         return jsonify(validate.errors), 400
     query = CategoryModel.query
@@ -31,15 +27,19 @@ def get_categories():
         query = query.filter_by(name=name)
     results = query.order_by(CategoryModel.created_at.desc()) \
         .paginate(page, per_page, error_out=False)
-    return jsonify(categories_output_schema.dump(results.items))
+    return jsonify({
+        'items': categories_output_schema.dump(results.items),
+        'pages': results.pages,
+        'total': results.total
+    })
 
 
-@categories.route('<int:id>', methods=['GET'])
+@categories.route('/<int:id>', methods=['GET'])
 def get_category_with_id(id):
-    result = CategoryModel.get(CategoryModel.id == id)
-    if not result:
+    category = CategoryModel.query.get(id)
+    if not category:
         return {'message': 'category with id {} does not exist'.format(id)}, 404
-    return jsonify(category_output_schema.dump(result))
+    return jsonify(category_output_schema.dump(category))
 
 
 @categories.route('/', methods=['POST'])
@@ -49,19 +49,19 @@ def post_category(user_id):
     user = UserModel.query.get(user_id)
     validate = category_input_schema.load(data)
     if len(validate.errors) > 0:
-        return jsonify(validate.errors), 422
+        return jsonify(validate.errors), 400
     category = CategoryModel(user=user, **data)
-    category.save_to_db(category)
+    category.save_to_db()
     return jsonify({'message': 'category with name {} has been successfully created'.format(data.get('name'))}), 201
 
 
-@categories.route('/<id>', methods=['PUT'])
+@categories.route('/<int:id>', methods=['PUT'])
 @jwt_required
 def update_category(user_id, id):
     data = request.get_json()
     validate = category_input_schema.load(data)
     if len(validate.errors) > 0:
-        return jsonify(validate.errors), 422
+        return jsonify(validate.errors), 400
     category = CategoryModel.query.get(id)
     if category:
         if category.creator_id != user_id:
@@ -70,11 +70,11 @@ def update_category(user_id, id):
             setattr(category, key, data[key])
     else:
         category = CategoryModel(**data)
-    CategoryModel.save_to_db(category)
+    category.save_to_db()
     return '', 204
 
 
-@categories.route('/<id>', methods=['DELETE'])
+@categories.route('/<int:id>', methods=['DELETE'])
 @jwt_required
 def delete_category(user_id, id):
     category = CategoryModel.query.get(id)
@@ -83,5 +83,5 @@ def delete_category(user_id, id):
     if category.creator_id != user_id:
         return jsonify({'message': 'Unauthorized to modify this category'}), 403
     ItemModel.query.filter(ItemModel.category_id == category.id).delete()
-    CategoryModel.delete_from_db(category)
+    category.delete_from_db()
     return '', 204

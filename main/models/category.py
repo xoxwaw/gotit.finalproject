@@ -1,13 +1,13 @@
 from main.db import db
-from main.models.db_action_mixin import DBActionMixin
-from main.constants import CATEGORY_NAME_LEN
+from main.models.db_base_mixin import DBBaseMixin
+from main.constants import CATEGORY_NAME_LENGTH
 
 
-class CategoryModel(db.Model, DBActionMixin):
+class CategoryModel(db.Model, DBBaseMixin):
     __tablename__ = 'categories'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(CATEGORY_NAME_LEN))
+    name = db.Column(db.String(CATEGORY_NAME_LENGTH))
     description = db.Column(db.Text())
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 

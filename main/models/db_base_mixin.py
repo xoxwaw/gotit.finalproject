@@ -1,16 +1,14 @@
 from main.db import db
 
 
-class DBActionMixin:
+class DBBaseMixin:
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
-    @staticmethod
-    def save_to_db(obj):
-        db.session.add(obj)
+    def save_to_db(self):
+        db.session.add(self)
         db.session.commit()
 
-    @staticmethod
-    def delete_from_db(obj):
-        db.session.delete(obj)
+    def delete_from_db(self):
+        db.session.delete(self)
         db.session.commit()

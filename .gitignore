@@ -1,9 +1,9 @@
 .idea/
 venv/
 .env
-*.pyc
-*~
-*.swp
+**/*.pyc
+.DS_Store
+**/*.swp
 **/__pycache__
-*.pyo
+**/*.pyo
 **/.pytest_cache

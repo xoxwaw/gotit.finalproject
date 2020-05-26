@@ -3,7 +3,6 @@ import pytest
 from main.db import db
 from main import create_app
 from tests import populate_data
-from tests.helpers import create_item, create_category, create_user
 
 
 @pytest.fixture(scope='session')
