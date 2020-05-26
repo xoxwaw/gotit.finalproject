@@ -2,4 +2,4 @@
 source venv/bin/activate
 export ENV="test"
 
-pytest
+coverage run -m pytest

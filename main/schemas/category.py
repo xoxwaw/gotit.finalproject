@@ -1,21 +1,17 @@
 from marshmallow import Schema, fields, validate
 
 from main.schemas.user import UserSchema
-from main.constants import CATEGORY_NAME_LENGTH
+from main.constants import CATEGORY_NAME_LENGTH, MAX_DESC_LENGTH
 from main.schemas import validate_white_spaces
 
 
 MIN_CATEGORY_NAME_LENGTH = 3
 
-class CategoryDescriptionSchema(Schema):
-    image_url = fields.URL()
-    description = fields.Str()
-
 
 class CategoryOutputSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(validate=validate.Length(min=MIN_CATEGORY_NAME_LENGTH, max=CATEGORY_NAME_LENGTH), required=True)
-    description = fields.Nested(CategoryDescriptionSchema)
+    description = fields.Str(validate=validate.Length(max=MAX_DESC_LENGTH))
     creator = fields.Nested(UserSchema, only=('id', 'username'))
 
 
@@ -26,7 +22,7 @@ class CategoryInputSchema(Schema):
             validate.Length(min=MIN_CATEGORY_NAME_LENGTH, max=CATEGORY_NAME_LENGTH),
             validate_white_spaces
         ], required=True)
-    description = fields.Nested(CategoryDescriptionSchema)
+    description = fields.Str(validate=validate.Length(max=MAX_DESC_LENGTH))
     creator_id = fields.Int()
 
 

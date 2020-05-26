@@ -11,8 +11,8 @@ class UserModel(db.Model, DBBaseMixin):
     hashed_password = db.Column(db.String(HASHED_PASSWORD_LENGTH), nullable=False)
     salt = db.Column(db.String(SALT_LENGTH), nullable=False)
 
-    category = db.relationship('CategoryModel', lazy='joined', backref='users')
-    item = db.relationship('ItemModel', lazy='joined', backref='users')
+    category = db.relationship('CategoryModel', lazy='joined')
+    item = db.relationship('ItemModel', lazy='joined')
 
     def __init__(self, **kwargs):
         super(UserModel, self).__init__(**kwargs)

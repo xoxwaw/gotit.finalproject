@@ -10,7 +10,7 @@ from tests.helpers import (
 
 def test_post_category(client, app):
     access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
-    data = {'name': 'test_category'}
+    data = {'name': 'test_category', 'description': 'This is a very nice category.'}
     status_code = post_category(client, access_token, data)
     assert status_code == 201
     with app.app_context():
@@ -49,7 +49,7 @@ def test_unauthorized_access_delete_category(client, app):
 def test_unauthorized_access_update_category(client, app):
     access_token = login(client, TEST_UNAUTH_USER, TEST_PASSWORD)
     data = {
-        'name': 'modified_name'
+        'name': 'modified_name',
     }
     id = 8
     status_code = update_category(client, access_token, id, data)
