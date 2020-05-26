@@ -16,7 +16,7 @@ class CategoryOutputSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(validate=validate.Length(min=MIN_CATEGORY_NAME_LENGTH, max=CATEGORY_NAME_LENGTH), required=True)
     description = fields.Nested(CategoryDescriptionSchema)
-    user = fields.Nested(UserSchema, only=('id', 'username'))
+    creator = fields.Nested(UserSchema, only=('id', 'username'))
 
 
 class CategoryInputSchema(Schema):
@@ -27,7 +27,7 @@ class CategoryInputSchema(Schema):
             validate_white_spaces
         ], required=True)
     description = fields.Nested(CategoryDescriptionSchema)
-    creator = fields.Int()
+    creator_id = fields.Int()
 
 
 category_input_schema = CategoryInputSchema()

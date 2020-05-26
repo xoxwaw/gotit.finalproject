@@ -8,15 +8,14 @@ class UserModel(db.Model, DBBaseMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(MAX_USERNAME_LENGTH), unique=True)
-    hashed_password = db.Column(db.String(HASHED_PASSWORD_LENGTH))
-    salt = db.Column(db.String(SALT_LENGTH))
+    hashed_password = db.Column(db.String(HASHED_PASSWORD_LENGTH), nullable=False)
+    salt = db.Column(db.String(SALT_LENGTH), nullable=False)
 
     category = db.relationship('CategoryModel', lazy='joined', backref='users')
     item = db.relationship('ItemModel', lazy='joined', backref='users')
 
     def __init__(self, **kwargs):
-        for key, val in kwargs.items():
-            setattr(self, key, val)
+        super(UserModel, self).__init__(**kwargs)
 
     @classmethod
     def find_by_username(cls, username):

@@ -7,12 +7,11 @@ class CategoryModel(db.Model, DBBaseMixin):
     __tablename__ = 'categories'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(CATEGORY_NAME_LENGTH))
+    name = db.Column(db.String(CATEGORY_NAME_LENGTH), nullable=False)
     description = db.Column(db.Text())
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    user = db.relationship('UserModel',
-                           primaryjoin='and_(CategoryModel.creator_id==UserModel.id)',
+    creator = db.relationship('UserModel',
                            backref='categories', lazy='joined'
                            )
     items = db.relationship('ItemModel', lazy='joined', backref='categories')

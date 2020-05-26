@@ -53,7 +53,7 @@ def post_category(user_id):
     validate = category_input_schema.load(data)
     if len(validate.errors) > 0:
         return BadRequest(errors=validate.errors).__repr__()
-    category = CategoryModel(user=user, **data)
+    category = CategoryModel(creator=user, **data)
     category.save_to_db()
     return PostSuccess(
         message='category with name {} has been successfully created'.format(data.get('name'))).__repr__()
@@ -70,8 +70,8 @@ def update_category(user_id, category_id):
     if category:
         if category.creator_id != user_id:
             return Unauthorized(message='Unauthorized to modify the content of this item').__repr__()
-        for key in data:
-            setattr(category, key, data[key])
+        for key, val in data.items():
+            setattr(category, key, val)
     else:
         category = CategoryModel(**data)
     category.save_to_db()

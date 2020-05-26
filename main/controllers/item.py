@@ -57,7 +57,7 @@ def post_item(user_id):
         if category and category.creator_id != user_id:
             return Unauthorized(message='unauthorized to assign item to category {}'
                            .format(category.name)).__repr__()
-    item = ItemModel(user=user, category=category, **data)
+    item = ItemModel(creator=user, category=category, **data)
     item.save_to_db()
     return PostSuccess(message= 'item with name {} has been successfully created'.format(data.get('name'))).__repr__()
 
@@ -78,8 +78,8 @@ def update_item(user_id, item_id):
             category = CategoryModel.query.get(category_id)
             if category and category.creator_id != user_id:
                 return Unauthorized(message= 'Unauthorized to change the category of this item').__repr__()
-        for key in data:
-            setattr(item, key, data[key])
+        for key, val in data.items():
+            setattr(item, key, val)
     else:
         item = ItemModel(**data)
     item.save_to_db()
@@ -95,4 +95,4 @@ def delete_item(user_id, item_id):
     if item.creator_id != user_id:
         return Unauthorized().__repr__()
     item.delete_from_db()
-    return '', 204
+    return NoContent().__repr__()

@@ -19,7 +19,7 @@ class ItemOutputSchema(Schema):
     name = fields.Str(validate=validate.Length(min=MIN_ITEM_NAME_LENGTH, max=ITEM_NAME_LENGTH), required=True)
     description = fields.Nested(ItemDescriptionSchema)
     category = fields.Nested(CategoryInputSchema, only=('id', 'name', 'description'))
-    user = fields.Nested(UserSchema)
+    creator = fields.Nested(UserSchema)
 
 
 class ItemInputSchema(Schema):
