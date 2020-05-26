@@ -2,6 +2,7 @@ from marshmallow import Schema, fields, validate
 
 from main.schemas.user import UserSchema
 from main.constants import CATEGORY_NAME_LENGTH
+from main.schemas import validate_white_spaces
 
 
 MIN_CATEGORY_NAME_LENGTH = 3
@@ -20,7 +21,11 @@ class CategoryOutputSchema(Schema):
 
 class CategoryInputSchema(Schema):
     id = fields.Int(dump_only=True)
-    name = fields.Str(validate=validate.Length(min=MIN_CATEGORY_NAME_LENGTH, max=CATEGORY_NAME_LENGTH), required=True)
+    name = fields.Str(
+        validate=[
+            validate.Length(min=MIN_CATEGORY_NAME_LENGTH, max=CATEGORY_NAME_LENGTH),
+            validate_white_spaces
+        ], required=True)
     description = fields.Nested(CategoryDescriptionSchema)
     creator = fields.Int()
 

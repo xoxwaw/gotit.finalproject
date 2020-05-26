@@ -73,4 +73,4 @@ def test_post_invalid_format_category(client, app):
         'category_id': 'hello'
     }
     status_code = post_item(client, access_token, data)
-    assert status_code == 422
+    assert status_code == 400

@@ -1,10 +1,15 @@
 from flask import Blueprint, request, jsonify
 
-from main.schemas.user import user_schema, user_post_validation_schema
+from main.schemas.user import user_post_validation_schema
 from main.models.user import UserModel
 from main.libs.password import hash_password, verify_password
 from main.auth import encode_jwt
 from main.auth import jwt_required
+from main.schemas.query import password_validation_schema
+from main.controllers.response import (
+    PostSuccess, BadRequest, NoContent, Unauthenticated
+)
+
 
 users = Blueprint("users", __name__, url_prefix='/')
 
@@ -14,11 +19,11 @@ def register():
     data = request.get_json()
     validate = user_post_validation_schema.load(data)
     if len(validate.errors) > 0:
-        return jsonify(validate.errors), 400
+        return BadRequest(errors=validate.errors).__repr__()
     user = UserModel.find_by_username(data.get('username'))
     if user:
-        return jsonify({'message': 'user with username {} has already existed'.
-                       format(data.get('username'))}), 400
+        return BadRequest(message= 'user with username {} has already existed'.
+                       format(data.get('username'))).__repr__()
     hashed_password, salt = hash_password(data.get('password'))
     user = UserModel(
         username=data.get('username'),
@@ -26,7 +31,7 @@ def register():
         salt=salt,
     )
     user.save_to_db()
-    return jsonify({'message': 'OK'}), 201
+    return PostSuccess().__repr__()
 
 
 @users.route('/auth', methods=['POST'])
@@ -34,25 +39,28 @@ def auth():
     data = request.get_json()
     validate = user_post_validation_schema.load(data)
     if len(validate.errors) > 0:
-        return jsonify(validate.errors), 400
+        return BadRequest(errors=validate.errors).__repr__()
     user = UserModel.find_by_username(data.get('username'))
     if not user:
-        return jsonify({'message': 'invalid username or password'}), 401
+        return Unauthenticated(message='invalid username or password').__repr__()
     response = {
         'access_token': encode_jwt(user.id).decode()
     }
-    return jsonify(response), 200
+    return jsonify(response)
 
 
 @users.route('/password', methods=['PUT'])
 @jwt_required
-def password(id):
-    user = UserModel.query.get(id)
+def password(user_id):
+    user = UserModel.query.get(user_id)
     data = request.get_json()
     if not verify_password(data.get('old_password'), user.hashed_password, user.salt):
-        return jsonify({'message': 'Wrong password'}), 400
+        return BadRequest(message='Wrong password').__repr__()
+    validate = password_validation_schema.load(data.get('new_password'))
+    if len(validate.errors) > 0:
+        return BadRequest(errors=validate.errors).__repr__()
     hashed_password, salt = hash_password(data.get('new_password'))
     user.hashed_password = hashed_password
     user.salt = salt
     user.save_to_db()
-    return '', 204
+    return NoContent().__repr__()

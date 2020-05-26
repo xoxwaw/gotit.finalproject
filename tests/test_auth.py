@@ -20,18 +20,18 @@ def test_register(client, app):
         ).fetchone() is not None
 
 
-def test_auth(client, app):
+def test_auth(client):
     token = login(client, TEST_USERNAME, TEST_PASSWORD)
     assert token.count('.') == 2
 
 
-def test_wrong_token_format(client, app):
+def test_wrong_token_format(client):
     data = {'name': 'phone book'}
     status_code = post_category(client, "", data)
-    assert status_code == 400
+    assert status_code == 401
 
 
-def test_incorrect_access_token(client, app):
+def test_incorrect_access_token(client):
     data = {'name': 'phone book'}
     token = login(client, TEST_USERNAME, TEST_PASSWORD)
     status_code = post_category(client, token + 'a', data)
