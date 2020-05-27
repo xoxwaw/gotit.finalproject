@@ -8,4 +8,4 @@ venv/
 **/*.pyo
 **/.pytest_cache
 .coverage
-.debug.log
+debug.log

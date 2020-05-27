@@ -4,4 +4,3 @@ export ENV="dev"
 source venv/bin/activate
 
 python -m main.app
-
