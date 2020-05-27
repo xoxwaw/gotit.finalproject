@@ -14,17 +14,13 @@ categories = Blueprint('categories', __name__, url_prefix='/categories')
 
 @categories.route('/')
 def get_categories():
-    name = request.args.get('name')
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
-    validate = query_validation_schema.load({
-        'name': name,
-        'page': page,
-        'per_page': per_page
-    })
+    validate = query_validation_schema.load(request.args)
     if len(validate.errors) > 0:
         return BadRequest(message=validate.errors).to_json()
     query = CategoryModel.query
+    name = validate.data.get('name')
+    page = validate.data.get('page')
+    per_page = validate.data.get('per_page')
     if name:
         query = query.filter_by(name=name)
     results = query.order_by(CategoryModel.created_at.desc()) \

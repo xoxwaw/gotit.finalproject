@@ -1,8 +1,8 @@
 import json
 
-from main.db import db
 from tests import TEST_USERNAME, TEST_PASSWORD, TEST_UNAUTH_USER
 from tests.helpers import login, post_category
+
 
 MIME_TYPE = 'application/json'
 HEADERS = {
@@ -11,15 +11,13 @@ HEADERS = {
 }
 
 
-def test_register(client, app):
+def test_register(client):
     response = client.post('/register', data=json.dumps({
         'username': TEST_UNAUTH_USER, 'password': TEST_PASSWORD
     }), headers=HEADERS)
     assert response.status_code == 204
-    with app.app_context():
-        assert db.engine.execute(
-            "SELECT * FROM users WHERE username='user_test'"
-        ).fetchone() is not None
+
+
 
 
 def test_auth(client):

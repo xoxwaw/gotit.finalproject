@@ -13,10 +13,6 @@ def test_post_category(client, app):
     data = {'name': 'test_category', 'description': 'This is a very nice category.'}
     status_code = post_category(client, access_token, data)
     assert status_code == 200
-    with app.app_context():
-        assert db.session.execute(
-            'SELECT * FROM categories WHERE name="test_category"'
-        ).fetchone() is not None
 
 
 def test_update_category(client, app):
@@ -27,11 +23,6 @@ def test_update_category(client, app):
     id = 1
     status_code = update_category(client, access_token, id, data)
     assert status_code == 204
-    with app.app_context():
-        category = db.session.execute(
-            'SELECT * FROM categories WHERE id={}'.format(id)
-        ).fetchone()
-        assert category.name == 'modified_name'
 
 
 def test_delete_category(client):

@@ -8,18 +8,14 @@ from tests.helpers import (
 )
 
 
-def test_post_item(client, app):
+def test_post_item(client):
     access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
     data = {'name': 'test_item'}
     status_code = post_item(client, access_token, data)
     assert status_code == 200
-    with app.app_context():
-        assert db.session.execute(
-            'SELECT * FROM items WHERE name="test_item"'
-        ).fetchone() is not None
 
 
-def test_update_item(client, app):
+def test_update_item(client):
     access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
     data = {
         'name': 'modified_name'
@@ -27,11 +23,6 @@ def test_update_item(client, app):
     id = 2
     status_code = update_item(client, access_token, id, data)
     assert status_code == 204
-    with app.app_context():
-        item = db.session.execute(
-            'SELECT * FROM items WHERE id={}'.format(id)
-        ).fetchone()
-        assert item.name == 'modified_name'
 
 
 def test_delete_item(client):

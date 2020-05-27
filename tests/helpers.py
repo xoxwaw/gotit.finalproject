@@ -59,6 +59,12 @@ def update_category(client, access_token, id, data):
     return response.status_code
 
 
+def change_password(client, access_token, data):
+    HEADERS['Authorization'] = 'JWT ' + access_token
+    response = client.put('/password', headers=HEADERS, data=json.dumps(data))
+    return response.status_code
+
+
 def create_category(data):
     category = CategoryModel(
         name=data['name'],
@@ -86,9 +92,3 @@ def create_user(data):
         salt=salt
     )
     UserModel.save_to_db(user)
-
-
-def change_password(client, access_token, data):
-    HEADERS['Authorization'] = 'JWT ' + access_token
-    response = client.put('/password', headers=HEADERS, data=json.dumps(data))
-    return response.status_code
