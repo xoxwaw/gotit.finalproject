@@ -74,8 +74,11 @@ def update_item(user_id, item_id):
         category_id = data.get('category_id')
         if category_id:
             category = CategoryModel.query.get(category_id)
-            if category and category.creator_id != user_id:
-                abort(UNAUTHORIZED, 'Unauthorized to change the category of this item')
+            if category:
+                if category.creator_id != user_id:
+                    abort(UNAUTHORIZED, 'Unauthorized to change the category of this item')
+            else:
+                abort(NOT_FOUND, 'category with id {} does not exist'.format(category_id))
         for key, val in data.items():
             setattr(item, key, val)
     else:

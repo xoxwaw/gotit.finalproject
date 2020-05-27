@@ -10,11 +10,11 @@ and categories in storage, along with authentications for those APIs.
 ## Installation 
 `git clone` this repository.
 
-You should have a MySQL Database running in your machine. Ideally, MySQL version 8 and above.
+You should have a MySQL Database running in your machine. This project runs on MySQL 8.0.18.
 For MacOS, after you have [Homebrew](https://brew.sh/) installed, run following commands: 
 
 ### MYSQL setup
-`brew install mysql`
+`brew install mysql@8.0.18`
 
 `brew tap homebrew/services `
 
@@ -26,12 +26,10 @@ Login to MySQL CLI
 
 `mysql -u root`
 
-Inside the mysql cli, you now should create 2 databases - one for testing and the other for development.
+Inside the mysql cli, you now should create 2 databases. The one for testing can be referenced in Testing Section.
 
 
 `CREATE DATABASE IF NOT EXISTS final_project;`
-
-`CREATE DATABASE IF NOT EXISTS test_final_project;`
 
 **Optionally**, you can create a separate user for this application. 
 
@@ -41,8 +39,6 @@ Inside the mysql cli, you now should create 2 databases - one for testing and th
 
 `GRANT ALL PRIVILEGES ON final_project.* To 'final_project_user'@'localhost';`
 
-`GRANT ALL PRIVILEGES ON test_final_project.* To 'final_project_user'@'localhost';`
-
 Or you can just use the root user with or without password.
 To set your root password:
 
@@ -50,7 +46,8 @@ To set your root password:
 
 ### Application Environment Setup
 
-Inside the environment config file `.env`,
+You should create an `.env` file for environment setup. A `.env` file example can be
+ referred by `.env.example`. Inside the environment config file `.env`,
 you can specify the environment. Change the user and password for the 
 database if you happen to change those in the steps above.
 
@@ -80,8 +77,6 @@ You can easily start the server by running the script `run_server.sh`
 
 `bash run_server.sh`
 
-To test the application, run `bash run_tests.sh`
-
 ## Available APIs
 By default, to test on local machine, the server runs on port 8000. You can 
 test these APIs on Postman.
@@ -109,6 +104,22 @@ and request body is a json contains `name`, `description`(optional),
 and `category_id`(optional)
 - `DELETE /items/<id>`: delete an item, headers include access_token
 - `DELETE /categories/<id>`: delete a category, headers include access_token
+
+## TESTING
+
+In order to run tests, you should create a database for testing
+
+`CREATE DATABASE IF NOT EXISTS test_final_project;`
+
+**Optionally**, if you have created a user for this project, you should also give permission to alter
+the database for this user
+
+`GRANT ALL PRIVILEGES ON test_final_project.* To 'final_project_user'@'localhost';`
+
+To test the application, run `bash run_tests.sh`
+
+You can also check the test coverage by running `coverage report -m` in the CLI.
+
 
 ## LICENSE
 

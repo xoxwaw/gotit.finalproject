@@ -53,7 +53,7 @@ def password(user_id):
     data = request.get_json()
     if not verify_password(data.get('old_password'), user.hashed_password, user.salt):
         abort(UNAUTHENTICATED, 'Wrong password')
-    validate = password_validation_schema.load(data.get('new_password'))
+    validate = password_validation_schema.load({'password': data.get('new_password')})
     if len(validate.errors) > 0:
         abort(BAD_REQUEST, validate.errors)
     hashed_password, salt = hash_password(data.get('new_password'))

@@ -5,6 +5,7 @@ from main.models.category import CategoryModel
 from main.models.item import ItemModel
 from main.models.user import UserModel
 
+
 MIME_TYPE = 'application/json'
 HEADERS = {
     'Content-Type': MIME_TYPE,
@@ -86,3 +87,9 @@ def create_user(data):
         salt=salt
     )
     UserModel.save_to_db(user)
+
+
+def change_password(client, access_token, data):
+    HEADERS['Authorization'] = 'JWT ' + access_token
+    response = client.put('/password', headers=HEADERS, data=json.dumps(data))
+    return response.status_code
