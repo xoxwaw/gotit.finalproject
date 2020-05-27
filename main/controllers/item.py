@@ -35,10 +35,10 @@ def get_items():
 
 @items.route('/<int:item_id>', methods=['GET'])
 def get_item_with_id(item_id):
-    result = ItemModel.query.get(item_id)
-    if not result:
+    item = ItemModel.query.get(item_id)
+    if item is None :
         return NotFound(message='item with id {} does not exist'.format(item_id)).to_json()
-    return jsonify(item_output_schema.dump(result).data)
+    return jsonify(item_output_schema.dump(item).data)
 
 
 @items.route('/', methods=['POST'])
@@ -51,7 +51,7 @@ def post_item(user_id):
     user = UserModel.query.get(user_id)
     category_id = data.get('category_id')
     category = None
-    if category_id:
+    if category_id is not None:
         category = CategoryModel.query.get(category_id)
         if category and category.creator_id != user_id:
             return Forbidden(message='unauthorized to assign item to category {}'
@@ -69,13 +69,13 @@ def update_item(user_id, item_id):
     if len(validate.errors) > 0:
         return BadRequest(message=validate.errors).to_json()
     item = ItemModel.query.get(item_id)
-    if item:  # if item exists
+    if item is not None:  # if item exists
         if item.creator_id != user_id:
             return Forbidden(message='Unauthorized to modify the content of this item').to_json()
         category_id = data.get('category_id')
-        if category_id:
+        if category_id is not None:
             category = CategoryModel.query.get(category_id)
-            if category:
+            if category is not None:
                 if category.creator_id != user_id:
                     return Forbidden(message='Unauthorized to change the category of this item').to_json()
             else:
@@ -92,7 +92,7 @@ def update_item(user_id, item_id):
 @jwt_required
 def delete_item(user_id, item_id):
     item = ItemModel.query.get(item_id)
-    if not item:
+    if item is None:
         return NotFound(message='item with id {} does not exist'.format(item_id)).to_json()
     if item.creator_id != user_id:
         return Forbidden().to_json()

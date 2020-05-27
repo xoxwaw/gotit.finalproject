@@ -19,7 +19,7 @@ def register():
     if len(validate.errors) > 0:
         return BadRequest(message=validate.errors).to_json()
     user = UserModel.find_by_username(data.get('username'))
-    if user:
+    if user is not None:
         return BadRequest(message='user with username {} has already existed'.
                           format(data.get('username'))).to_json()
     hashed_password, salt = hash_password(data.get('password'))
@@ -39,7 +39,7 @@ def auth():
     if len(validate.errors) > 0:
         return BadRequest(message=validate.errors).to_json()
     user = UserModel.find_by_username(data.get('username'))
-    if not user:
+    if user is None:
         return UnAuthenticated(message='invalid username or password').to_json()
     response = {
         'access_token': encode_jwt(user.id).decode()

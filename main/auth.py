@@ -33,7 +33,7 @@ def jwt_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         jwt_token = request.headers.get('Authorization')
-        if not jwt_token:
+        if jwt_token is None:
             return UnAuthenticated(message='Empty token').to_json()
         if len(jwt_token.split()) != 2 or not jwt_token.startswith('JWT'):
             return UnAuthenticated(message='Wrong token format').to_json()
@@ -43,7 +43,7 @@ def jwt_required(f):
             payload = jwt.decode(access_token, secret, algorithm)
         except InvalidSignatureError:
             return UnAuthenticated(message='Invalid token').to_json()
-        if not identity(payload):
+        if identity(payload) is None:
             return UnAuthenticated(message='Wrong credentials').to_json()
         if payload.get('exp') < time.time():
             return UnAuthenticated(message='Token expired').to_json()

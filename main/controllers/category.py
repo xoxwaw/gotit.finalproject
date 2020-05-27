@@ -62,7 +62,7 @@ def update_category(user_id, category_id):
     if len(validate.errors) > 0:
         return BadRequest(message=validate.errors).to_json()
     category = CategoryModel.query.get(category_id)
-    if category:
+    if category is not None:
         if category.creator_id != user_id:
             return Forbidden(message='Unauthorized to modify the content of this item').to_json()
         for key, val in data.items():
@@ -77,7 +77,7 @@ def update_category(user_id, category_id):
 @jwt_required
 def delete_category(user_id, category_id):
     category = CategoryModel.query.get(category_id)
-    if not category:
+    if category is None:
         return NotFound(message='Category with id {} does not exist'.format(category_id)).to_json()
     if category.creator_id != user_id:
         return Forbidden(message='Unauthorized to modify this category').to_json()
