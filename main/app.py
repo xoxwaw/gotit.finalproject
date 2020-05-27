@@ -1,5 +1,5 @@
-from main.db import db
 from main import create_app
+from main.db import db
 
 app = create_app('dev')
 

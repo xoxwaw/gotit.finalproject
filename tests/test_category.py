@@ -12,7 +12,7 @@ def test_post_category(client, app):
     access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
     data = {'name': 'test_category', 'description': 'This is a very nice category.'}
     status_code = post_category(client, access_token, data)
-    assert status_code == 201
+    assert status_code == 200
     with app.app_context():
         assert db.session.execute(
             'SELECT * FROM categories WHERE name="test_category"'

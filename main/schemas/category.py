@@ -1,9 +1,8 @@
 from marshmallow import Schema, fields, validate
 
-from main.schemas.user import UserSchema
 from main.constants import CATEGORY_NAME_LENGTH, MAX_DESC_LENGTH
 from main.schemas import validate_white_spaces
-
+from main.schemas.user import UserSchema
 
 MIN_CATEGORY_NAME_LENGTH = 3
 

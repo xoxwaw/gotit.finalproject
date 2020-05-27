@@ -1,5 +1,5 @@
-from main.db import db
 from main.constants import ITEM_NAME_LENGTH, MAX_DESC_LENGTH
+from main.db import db
 from main.models.db_base_mixin import DBBaseMixin
 
 

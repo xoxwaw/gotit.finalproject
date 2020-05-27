@@ -1,6 +1,6 @@
+from main.constants import CATEGORY_NAME_LENGTH, MAX_DESC_LENGTH
 from main.db import db
 from main.models.db_base_mixin import DBBaseMixin
-from main.constants import CATEGORY_NAME_LENGTH, MAX_DESC_LENGTH
 
 
 class CategoryModel(db.Model, DBBaseMixin):

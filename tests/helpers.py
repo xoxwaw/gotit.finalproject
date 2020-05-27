@@ -5,10 +5,10 @@ from main.models.category import CategoryModel
 from main.models.item import ItemModel
 from main.models.user import UserModel
 
-mimetype = 'application/json'
-headers = {
-    'Content-Type': mimetype,
-    'Accept': mimetype,
+MIME_TYPE = 'application/json'
+HEADERS = {
+    'Content-Type': MIME_TYPE,
+    'Accept': MIME_TYPE,
     'Authorization': 'JWT '
 }
 
@@ -16,46 +16,46 @@ headers = {
 def login(client, username, password):
     response = client.post('/auth', data=json.dumps({
         'username': username, 'password': password
-    }), headers=headers)
+    }), headers=HEADERS)
     data = json.loads(response.get_data(as_text=True))
     return data.get('access_token')
 
 
 def post_item(client, access_token, data):
-    headers['Authorization'] = 'JWT ' + access_token
-    response = client.post('/items/', headers=headers,
+    HEADERS['Authorization'] = 'JWT ' + access_token
+    response = client.post('/items/', headers=HEADERS,
                            data=json.dumps(data))
     return response.status_code
 
 
 def delete_item(client, access_token, id):
-    headers['Authorization'] = 'JWT ' + access_token
-    response = client.delete('/items/{}'.format(id), headers=headers)
+    HEADERS['Authorization'] = 'JWT ' + access_token
+    response = client.delete('/items/{}'.format(id), headers=HEADERS)
     return response.status_code
 
 
 def update_item(client, access_token, id, data):
-    headers['Authorization'] = 'JWT ' + access_token
-    response = client.put('/items/{}'.format(id), headers=headers, data=json.dumps(data))
+    HEADERS['Authorization'] = 'JWT ' + access_token
+    response = client.put('/items/{}'.format(id), headers=HEADERS, data=json.dumps(data))
     return response.status_code
 
 
 def post_category(client, access_token, data):
-    headers['Authorization'] = 'JWT ' + access_token
-    response = client.post('/categories/', headers=headers,
+    HEADERS['Authorization'] = 'JWT ' + access_token
+    response = client.post('/categories/', headers=HEADERS,
                            data=json.dumps(data))
     return response.status_code
 
 
 def delete_category(client, access_token, id):
-    headers['Authorization'] = 'JWT ' + access_token
-    response = client.delete('/categories/{}'.format(id), headers=headers)
+    HEADERS['Authorization'] = 'JWT ' + access_token
+    response = client.delete('/categories/{}'.format(id), headers=HEADERS)
     return response.status_code
 
 
 def update_category(client, access_token, id, data):
-    headers['Authorization'] = 'JWT ' + access_token
-    response = client.put('/categories/{}'.format(id), headers=headers, data=json.dumps(data))
+    HEADERS['Authorization'] = 'JWT ' + access_token
+    response = client.put('/categories/{}'.format(id), headers=HEADERS, data=json.dumps(data))
     return response.status_code
 
 

@@ -1,5 +1,5 @@
-from main.config.base import BaseEnv
 from main.config import validate_env
+from main.config.base import BaseEnv
 
 
 class Config(BaseEnv):

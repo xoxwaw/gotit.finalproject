@@ -6,10 +6,10 @@ from tests.helpers import login, post_category
 
 
 def test_register(client, app):
-    mimetype = 'application/json'
+    mime_type = 'application/json'
     headers = {
-        'Content-Type': mimetype,
-        'Accept': mimetype
+        'Content-Type': mime_type,
+        'Accept': mime_type
     }
     response = client.post('/register', data=json.dumps({
         'username': TEST_UNAUTH_USER, 'password': TEST_PASSWORD

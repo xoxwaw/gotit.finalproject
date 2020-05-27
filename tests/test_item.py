@@ -12,7 +12,7 @@ def test_post_item(client, app):
     access_token = login(client, TEST_USERNAME, TEST_PASSWORD)
     data = {'name': 'test_item'}
     status_code = post_item(client, access_token, data)
-    assert status_code == 201
+    assert status_code == 200
     with app.app_context():
         assert db.session.execute(
             'SELECT * FROM items WHERE name="test_item"'

@@ -1,5 +1,5 @@
-from main.db import db
 from main.constants import MAX_USERNAME_LENGTH, HASHED_PASSWORD_LENGTH, SALT_LENGTH
+from main.db import db
 from main.models.db_base_mixin import DBBaseMixin
 
 

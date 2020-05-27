@@ -1,7 +1,7 @@
 import pytest
 
-from main.db import db
 from main import create_app
+from main.db import db
 from tests import populate_data
 
 
