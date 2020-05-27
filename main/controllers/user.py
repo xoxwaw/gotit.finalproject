@@ -2,7 +2,8 @@ from flask import Blueprint, request, jsonify, abort
 
 from main.auth import encode_jwt
 from main.auth import jwt_required
-from main.constants import (BAD_REQUEST, UNAUTHENTICATED, NO_CONTENT)
+from main.constants import  NO_CONTENT
+from main.controllers.errors import (BadRequest, Forbidden, NotFound, UnAuthenticated)
 from main.libs.password import hash_password, verify_password
 from main.models.user import UserModel
 from main.schemas.query import password_validation_schema
@@ -16,11 +17,11 @@ def register():
     data = request.get_json()
     validate = user_post_validation_schema.load(data)
     if len(validate.errors) > 0:
-        abort(BAD_REQUEST, validate.errors)
+        return BadRequest(message=validate.errors).to_json()
     user = UserModel.find_by_username(data.get('username'))
     if user:
-        abort(BAD_REQUEST, 'user with username {} has already existed'.
-              format(data.get('username')))
+        return BadRequest(message='user with username {} has already existed'.
+              format(data.get('username'))).to_json()
     hashed_password, salt = hash_password(data.get('password'))
     user = UserModel(
         username=data.get('username'),
@@ -36,10 +37,10 @@ def auth():
     data = request.get_json()
     validate = user_post_validation_schema.load(data)
     if len(validate.errors) > 0:
-        abort(BAD_REQUEST, validate.errors)
+        return BadRequest(message=validate.errors).to_json()
     user = UserModel.find_by_username(data.get('username'))
     if not user:
-        abort(UNAUTHENTICATED, 'invalid username or password')
+        return UnAuthenticated(message='invalid username or password').to_json()
     response = {
         'access_token': encode_jwt(user.id).decode()
     }
@@ -52,10 +53,10 @@ def password(user_id):
     user = UserModel.query.get(user_id)
     data = request.get_json()
     if not verify_password(data.get('old_password'), user.hashed_password, user.salt):
-        abort(UNAUTHENTICATED, 'Wrong password')
+        return UnAuthenticated(message='Wrong password').to_json()
     validate = password_validation_schema.load({'password': data.get('new_password')})
     if len(validate.errors) > 0:
-        abort(BAD_REQUEST, validate.errors)
+        return BadRequest(message=validate.errors).to_json()
     hashed_password, salt = hash_password(data.get('new_password'))
     user.hashed_password = hashed_password
     user.salt = salt

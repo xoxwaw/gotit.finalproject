@@ -5,7 +5,6 @@ from main.models.category import CategoryModel
 from main.models.item import ItemModel
 from main.models.user import UserModel
 
-
 MIME_TYPE = 'application/json'
 HEADERS = {
     'Content-Type': MIME_TYPE,

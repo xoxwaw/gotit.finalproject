@@ -1,5 +1,4 @@
 import datetime as dt
-import sys
 import time
 from functools import wraps
 
@@ -10,6 +9,7 @@ from jwt.exceptions import InvalidSignatureError
 from main.config.base import BaseEnv
 from main.constants import UNAUTHENTICATED
 from main.models.user import UserModel
+from main.controllers.errors import UnAuthenticated
 
 algorithm = 'HS256'
 secret = BaseEnv.SECRET_KEY
@@ -35,19 +35,19 @@ def jwt_required(f):
     def wrap(*args, **kwargs):
         jwt_token = request.headers.get('Authorization')
         if not jwt_token:
-            abort(UNAUTHENTICATED, 'Empty token')
+            return UnAuthenticated(message='Empty token').to_json()
         if len(jwt_token.split()) != 2 or not jwt_token.startswith('JWT'):
-            abort(UNAUTHENTICATED, 'Wrong token format')
+            return UnAuthenticated(message='Wrong token format').to_json()
         access_token = jwt_token.split()[1]
         payload = None
         try:
             payload = jwt.decode(access_token, secret, algorithm)
         except InvalidSignatureError:
-            abort(UNAUTHENTICATED, 'Invalid token')
+            return UnAuthenticated(message='Invalid token').to_json()
         if not identity(payload):
-            abort(UNAUTHENTICATED, 'Wrong credentials')
+            return UnAuthenticated(message='Wrong credentials').to_json()
         if payload.get('exp') < time.time():
-            abort(UNAUTHENTICATED, 'Token expired')
+            return UnAuthenticated(message='Token expired').to_json()
         return f(payload.get('identity'), *args, **kwargs)
 
     return wrap

@@ -4,12 +4,12 @@ from main.db import db
 from tests import TEST_USERNAME, TEST_PASSWORD, TEST_UNAUTH_USER
 from tests.helpers import login, post_category
 
-
 MIME_TYPE = 'application/json'
 HEADERS = {
     'Content-Type': MIME_TYPE,
     'Accept': MIME_TYPE
 }
+
 
 def test_register(client, app):
     response = client.post('/register', data=json.dumps({
