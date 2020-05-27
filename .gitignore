@@ -7,3 +7,5 @@ venv/
 **/__pycache__
 **/*.pyo
 **/.pytest_cache
+.coverage
+.debug.log
