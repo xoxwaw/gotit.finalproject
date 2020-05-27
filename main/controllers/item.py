@@ -1,14 +1,13 @@
-from flask import Blueprint, request, jsonify, abort
+from flask import Blueprint, request, jsonify
 
 from main.auth import jwt_required
-from main.constants import (BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, NO_CONTENT)
+from main.constants import (NO_CONTENT)
+from main.controllers.errors import (BadRequest, Forbidden, NotFound)
 from main.models.category import CategoryModel
 from main.models.item import ItemModel
 from main.models.user import UserModel
 from main.schemas.item import item_input_schema, item_output_schema, items_output_schema
 from main.schemas.query import query_validation_schema
-from main.controllers.errors import (BadRequest, Forbidden, NotFound)
-
 
 items = Blueprint('items', __name__, url_prefix='/items')
 
@@ -56,7 +55,7 @@ def post_item(user_id):
         category = CategoryModel.query.get(category_id)
         if category and category.creator_id != user_id:
             return Forbidden(message='unauthorized to assign item to category {}'
-                  .format(category.name)).to_json()
+                             .format(category.name)).to_json()
     item = ItemModel(creator=user, category=category, **data)
     item.save_to_db()
     return jsonify({'message': 'item with name {} has been successfully created'.format(data.get('name'))})

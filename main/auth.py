@@ -3,13 +3,12 @@ import time
 from functools import wraps
 
 import jwt
-from flask import request, abort
+from flask import request
 from jwt.exceptions import InvalidSignatureError
 
 from main.config.base import BaseEnv
-from main.constants import UNAUTHENTICATED
-from main.models.user import UserModel
 from main.controllers.errors import UnAuthenticated
+from main.models.user import UserModel
 
 algorithm = 'HS256'
 secret = BaseEnv.SECRET_KEY

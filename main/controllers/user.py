@@ -1,9 +1,9 @@
-from flask import Blueprint, request, jsonify, abort
+from flask import Blueprint, request, jsonify
 
 from main.auth import encode_jwt
 from main.auth import jwt_required
-from main.constants import  NO_CONTENT
-from main.controllers.errors import (BadRequest, Forbidden, NotFound, UnAuthenticated)
+from main.constants import NO_CONTENT
+from main.controllers.errors import (BadRequest, UnAuthenticated)
 from main.libs.password import hash_password, verify_password
 from main.models.user import UserModel
 from main.schemas.query import password_validation_schema
@@ -21,7 +21,7 @@ def register():
     user = UserModel.find_by_username(data.get('username'))
     if user:
         return BadRequest(message='user with username {} has already existed'.
-              format(data.get('username'))).to_json()
+                          format(data.get('username'))).to_json()
     hashed_password, salt = hash_password(data.get('password'))
     user = UserModel(
         username=data.get('username'),

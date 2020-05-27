@@ -1,13 +1,13 @@
-from flask import Blueprint, request, jsonify, abort
+from flask import Blueprint, request, jsonify
 
 from main.auth import jwt_required
 from main.constants import NO_CONTENT
+from main.controllers.errors import (BadRequest, Forbidden, NotFound)
 from main.models.category import CategoryModel
 from main.models.item import ItemModel
 from main.models.user import UserModel
 from main.schemas.category import category_input_schema, categories_output_schema, category_output_schema
 from main.schemas.query import query_validation_schema
-from main.controllers.errors import (BadRequest, Forbidden, NotFound)
 
 categories = Blueprint('categories', __name__, url_prefix='/categories')
 
