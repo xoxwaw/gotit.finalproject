@@ -9,9 +9,4 @@ class PaginationSchema(Schema):
     per_page = fields.Integer(allow_none=True, validate=validate.Range(min=1, max=50), default=10)
 
 
-class ItemPaginationSchema(PaginationSchema):
-    category_id = fields.Integer(allow_none=True, validate=validate.Range(min=1))
-
-
 pagination_schema = PaginationSchema()
-item_pagination_schema = ItemPaginationSchema()

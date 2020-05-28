@@ -1,7 +1,6 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, abort
 
 from main.auth import jwt_required
-from main.controllers.errors import BadRequest, Forbidden, NotFound
 from main.models.category import CategoryModel
 from main.models.item import ItemModel
 from main.models.user import UserModel
@@ -15,7 +14,7 @@ categories = Blueprint('categories', __name__)  # /categories
 def get_categories():
     validate = pagination_schema.load(request.args)
     if len(validate.errors) > 0:
-        return BadRequest(errors=validate.errors).to_json()
+        abort(400, {'errors': validate.errors})
     query = CategoryModel.query
     name = validate.data.get('name')
     page = validate.data.get('page')
@@ -35,7 +34,7 @@ def get_categories():
 def get_category(category_id):
     category = CategoryModel.query.get(category_id)
     if not category:
-        return NotFound(message='category with id {} does not exist'.format(category_id)).to_json()
+        abort(404, {'message': 'category with id {} does not exist'.format(category_id)})
     return jsonify(category_output_schema.dump(category))
 
 
@@ -46,7 +45,7 @@ def create_category(user_id):
     user = UserModel.query.get(user_id)
     validate = category_input_schema.load(data)
     if len(validate.errors) > 0:
-        return BadRequest(errors=validate.errors).to_json()
+        abort(400, {'errors': validate.errors})
     category = CategoryModel(user=user, **validate.data)
     category.save_to_db()
     return jsonify({
@@ -59,12 +58,12 @@ def update_category(user_id, category_id):
     data = request.get_json()
     validate = category_input_schema.load(data)
     if len(validate.errors) > 0:
-        return BadRequest(errors=validate.errors).to_json()
+        abort(400, {'errors': validate.errors})
     category = CategoryModel.query.get(category_id)
     if category is None:
-        return NotFound(message='Cannot find category with id {}'.format(category_id)).to_json()
+        abort(404, {'message': 'Cannot find category with id {}'.format(category_id)})
     if category.user_id != user_id:
-        return Forbidden(message='Unauthorized to update this category').to_json()
+        abort(403, {'message': 'Unauthorized to update this category'})
     for key, val in validate.data.items():
         setattr(category, key, val)
     category.save_to_db()
@@ -76,9 +75,9 @@ def update_category(user_id, category_id):
 def delete_category(user_id, category_id):
     category = CategoryModel.query.get(category_id)
     if category is None:
-        return NotFound(message='Category with id {} does not exist'.format(category_id)).to_json()
+        abort(404, {'message': 'Category with id {} does not exist'.format(category_id)})
     if category.user_id != user_id:
-        return Forbidden(message='Unauthorized to modify this category').to_json()
+        abort(403, {'message': 'Unauthorized to modify this category'})
     ItemModel.query.filter(ItemModel.category_id == category.id).delete()
     category.delete_from_db()
     return '', 204

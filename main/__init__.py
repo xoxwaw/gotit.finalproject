@@ -13,7 +13,6 @@ from main.controllers.item import items
 from main.controllers.user import users
 from main.db import db
 
-
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
@@ -36,5 +35,6 @@ def create_app():
         code = 500
         if isinstance(e, HTTPException):
             code = e.code
-        return jsonify({'message': e.description['message']}), code
+        return jsonify(e.description), code
+
     return app

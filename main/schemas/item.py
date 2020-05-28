@@ -3,6 +3,7 @@ from marshmallow import Schema, fields, validate
 from main.constants import ITEM_NAME_LENGTH, MAX_DESC_LENGTH, MIN_ITEM_NAME_LENGTH
 from main.schemas.category import CategoryInputSchema
 from main.schemas.helpers import validate_empty_string
+from main.schemas.pagination import PaginationSchema
 from main.schemas.user import UserSchema
 
 
@@ -28,3 +29,10 @@ item_input_schema = ItemInputSchema()
 
 items_output_schema = ItemOutputSchema(many=True)
 item_output_schema = ItemOutputSchema()
+
+
+class ItemPaginationSchema(PaginationSchema):
+    category_id = fields.Integer(allow_none=True, validate=validate.Range(min=1))
+
+
+item_pagination_schema = ItemPaginationSchema()
