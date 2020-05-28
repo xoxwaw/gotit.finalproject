@@ -2,20 +2,33 @@ import logging
 from importlib import import_module
 
 from flask import Flask
+from dotenv import load_dotenv
 
-import main.config as cfg
+load_dotenv()
+
 from main.controllers.category import categories
 from main.controllers.item import items
 from main.controllers.user import users
 from main.db import db
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.FileHandler('debug.log'),
+        logging.StreamHandler()
+    ]
+)
+
 
 def create_app(env):
     app = Flask(__name__)
-    if env not in ['dev', 'test']:
-        logging.error('env must be dev or test')
-        exit(0)
-    module = import_module('main.config.{}'.format(env))
+    module = None
+    try:
+        module = import_module('main.config.{}'.format(env))
+    except ModuleNotFoundError:
+        logging.error('Environment {} not found'.format(env))
+        exit(1)
     Config = getattr(module, 'Config')
     app.config.from_object(Config())
     app.register_blueprint(users, url_prefix='/')

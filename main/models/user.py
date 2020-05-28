@@ -1,9 +1,9 @@
 from main.constants import MAX_USERNAME_LENGTH, HASHED_PASSWORD_LENGTH, SALT_LENGTH
 from main.db import db
-from main.models.db_base_mixin import DBBaseMixin
+from main.models.base_model import BaseModel
 
 
-class UserModel(db.Model, DBBaseMixin):
+class UserModel(db.Model, BaseModel):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)

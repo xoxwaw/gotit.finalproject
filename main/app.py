@@ -1,7 +1,10 @@
+import os
+
 from main import create_app
 from main.db import db
 
-app = create_app('dev')
+
+app = create_app(os.getenv('ENV'))
 
 
 @app.before_first_request
