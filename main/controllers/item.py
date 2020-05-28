@@ -35,7 +35,7 @@ def get_items():
 @items.route('/<int:item_id>', methods=['GET'])
 def get_item(item_id):
     item = ItemModel.query.get(item_id)
-    if item is None :
+    if item is None:
         return NotFound(message='item with id {} does not exist'.format(item_id)).to_json()
     return jsonify(item_output_schema.dump(item).data)
 

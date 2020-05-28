@@ -32,6 +32,7 @@ def access_token(client):
     token = login(client, TEST_USERNAME, TEST_PASSWORD)
     return token
 
+
 @pytest.fixture(scope='module')
 def unauth_token(client):
     token = login(client, TEST_UNAUTH_USER, TEST_PASSWORD)

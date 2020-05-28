@@ -1,9 +1,9 @@
 import logging
-from importlib import import_module
 import os
+from importlib import import_module
 
-from flask import Flask
 from dotenv import load_dotenv
+from flask import Flask
 
 load_dotenv('envs/{}/.env'.format(os.getenv('ENV')))
 
@@ -11,6 +11,7 @@ from main.controllers.category import categories
 from main.controllers.item import items
 from main.controllers.user import users
 from main.db import db
+
 
 logging.basicConfig(
     level=logging.INFO,

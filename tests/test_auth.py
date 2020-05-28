@@ -1,10 +1,8 @@
 import json
 
-import pytest
+from main.models.user import UserModel
 from tests import TEST_USERNAME, TEST_PASSWORD, TEST_UNAUTH_USER
 from tests.helpers import login, post_category
-from main.models.user import UserModel
-
 
 MIME_TYPE = 'application/json'
 HEADERS = {
@@ -66,4 +64,3 @@ def test_register_existing_user(client):
     response = client.post('/register', data=json.dumps(data), headers=HEADERS)
     assert response.status_code == 400
     assert response.get_json().get('message') == 'user with username {} has already existed'.format(TEST_USERNAME)
-

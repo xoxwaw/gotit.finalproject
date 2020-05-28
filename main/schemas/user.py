@@ -27,7 +27,7 @@ class PasswordSchema(Schema):
     password = fields.Str(validate=[
         validate_empty_string,
         validate.Length(min=MIN_PASSWORD_LENGTH, max=MAX_PASSWORD_LENGTH)
-])
+    ])
 
 
 password_validation_schema = PasswordSchema()

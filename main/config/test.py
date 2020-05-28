@@ -1,4 +1,3 @@
-from main.config import get_env
 from main.config.base import BaseEnv
 
 

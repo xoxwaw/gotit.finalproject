@@ -55,7 +55,9 @@ def validate_get_input(schema):
             if len(validate.errors) > 0:
                 return BadRequest(errors=validate.errors).to_json()
             return func(validate, *args, **kwargs)
+
         return inner
+
     return decorator
 
 
@@ -70,5 +72,7 @@ def validate_post_input(schema):
                 print(validate.errors, file=sys.stderr)
                 return BadRequest(errors=validate.errors).to_json()
             return func(validate, *args, **kwargs)
+
         return inner
+
     return wrapper

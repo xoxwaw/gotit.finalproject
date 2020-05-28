@@ -1,8 +1,7 @@
-from tests import TEST_PASSWORD, TEST_USERNAME
-from tests.helpers import change_password, login
 from main.libs.password import verify_password
 from main.models.user import UserModel
-
+from tests import TEST_PASSWORD, TEST_USERNAME
+from tests.helpers import change_password, login
 
 NEW_PASSWORD = 'new_password'
 

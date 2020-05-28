@@ -1,9 +1,9 @@
+from main.models.category import CategoryModel
 from tests.helpers import (
     post_category,
     delete_category,
     update_category,
 )
-from main.models.category import CategoryModel
 
 
 def test_create_category_successfully(unauth_token, client):
@@ -39,7 +39,7 @@ def test_unauthorized_access_delete_category(unauth_token, client):
     assert CategoryModel.query.get(category_id) is not None
 
 
-def test_unauthorized_access_update_category(unauth_token,client):
+def test_unauthorized_access_update_category(unauth_token, client):
     data = {
         'name': 'modified_name',
     }

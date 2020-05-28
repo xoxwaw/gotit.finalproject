@@ -1,8 +1,8 @@
 from marshmallow import Schema, fields, validate
 
 from main.constants import ITEM_NAME_LENGTH, MAX_DESC_LENGTH, MIN_ITEM_NAME_LENGTH
-from main.schemas.helpers import validate_empty_string
 from main.schemas.category import CategoryInputSchema
+from main.schemas.helpers import validate_empty_string
 from main.schemas.user import UserSchema
 
 
