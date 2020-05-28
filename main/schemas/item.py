@@ -21,7 +21,7 @@ class ItemInputSchema(Schema):
             validate_empty_string
         ], required=True)
     description = fields.Str(validate=validate.Length(max=MAX_DESC_LENGTH))
-    category_id = fields.Int()
+    category_id = fields.Int(validate=validate.Range(min=1))
 
 
 item_input_schema = ItemInputSchema()
