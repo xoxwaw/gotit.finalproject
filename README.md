@@ -46,8 +46,10 @@ To set your root password:
 
 ### Application Environment Setup
 
-You should create an `.env` file for environment setup. A `.env` file example can be
- referred by `.env.example`. Inside the environment config file `.env`,
+You should create an `.env` file inside a folder with the environment name for each environment setup inside `envs` folder.
+For example, an `.env` for a `dev` environment should be placed as `envs/dev/.env`.
+
+ A `.env` file example can be referred by `.env.example`. Inside the environment config file `.env`,
 you can specify the environment. Change the user and password for the 
 database if you happen to change those in the steps above.
 

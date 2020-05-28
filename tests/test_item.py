@@ -5,6 +5,9 @@ from tests.helpers import (
 )
 
 
+NON_EXISTENT_ID = 100
+
+
 def test_post_item_successfully(access_token, client):
     data = {'name': 'test_item'}
     data, status_code = post_item(client, access_token, data)
@@ -66,7 +69,7 @@ def test_get_items_successfully(client):
 
 
 def test_get_nonexistent_item(client):
-    response = client.get('/items/100')
+    response = client.get('/items/{}'.format(NON_EXISTENT_ID))
     assert response.status_code == 404
 
 
@@ -93,15 +96,15 @@ def test_unauthorized_access_update_category_of_item(access_token, client):
 def test_update_nonexistent_category_for_item(access_token, client):
     data = {
         'name': 'modified_name',
-        'category_id': 100
+        'category_id': NON_EXISTENT_ID
     }
     item_id = 7
     data, status_code = update_item(client, access_token, item_id, data)
     assert status_code == 404
-    assert data.get('message') == 'category with id {} does not exist'.format(100)
+    assert data.get('message') == 'category with id {} does not exist'.format(NON_EXISTENT_ID)
 
 
 def test_delete_non_existent_item(access_token, client):
-    data, status_code = delete_item(client, access_token, 100)
+    data, status_code = delete_item(client, access_token, NON_EXISTENT_ID)
     assert status_code == 404
-    assert data.get('message') == 'item with id {} does not exist'.format(100)
+    assert data.get('message') == 'item with id {} does not exist'.format(NON_EXISTENT_ID)

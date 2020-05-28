@@ -1,6 +1,6 @@
 from main.constants import MAX_USERNAME_LENGTH, HASHED_PASSWORD_LENGTH, SALT_LENGTH
 from main.db import db
-from main.models.base_model import BaseModel
+from main.models.base import BaseModel
 
 
 class UserModel(db.Model, BaseModel):

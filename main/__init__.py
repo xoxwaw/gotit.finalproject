@@ -1,12 +1,13 @@
 import logging
 import os
-from importlib import import_module
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, jsonify
+from werkzeug.exceptions import HTTPException
 
 load_dotenv('envs/{}/.env'.format(os.getenv('ENV')))
 
+from main.config import conf
 from main.controllers.category import categories
 from main.controllers.item import items
 from main.controllers.user import users
@@ -23,17 +24,17 @@ logging.basicConfig(
 )
 
 
-def create_app(env):
+def create_app():
     app = Flask(__name__)
-    module = None
-    try:
-        module = import_module('main.config.{}'.format(env))
-    except ModuleNotFoundError:
-        logging.error('Environment {} not found'.format(env))
-        exit(1)
-    Config = getattr(module, 'Config')
-    app.config.from_object(Config())
+    app.config.from_object(conf)
     app.register_blueprint(users, url_prefix='/')
     app.register_blueprint(items, url_prefix='/items')
     app.register_blueprint(categories, url_prefix='/categories')
+
+    @app.errorhandler(Exception)
+    def handle_error(e):
+        code = 500
+        if isinstance(e, HTTPException):
+            code = e.code
+        return jsonify({'message': e.description['message']}), code
     return app

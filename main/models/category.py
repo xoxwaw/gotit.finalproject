@@ -1,6 +1,6 @@
 from main.constants import CATEGORY_NAME_LENGTH, MAX_DESC_LENGTH
 from main.db import db
-from main.models.base_model import BaseModel
+from main.models.base import BaseModel
 
 
 class CategoryModel(db.Model, BaseModel):

@@ -75,11 +75,10 @@ def update_item(user_id, item_id):
     category_id = validate.data.get('category_id')
     if category_id is not None:
         category = CategoryModel.query.get(category_id)
-        if category is not None:
-            if category.user_id != user_id:
-                return Forbidden(message='Unauthorized to change to this category').to_json()
-        else:
+        if category is None:
             return NotFound(message='category with id {} does not exist'.format(category_id)).to_json()
+        if category.user_id != user_id:
+            return Forbidden(message='Unauthorized to change to this category').to_json()
     for key, val in validate.data.items():
         setattr(item, key, val)
     item.save_to_db()

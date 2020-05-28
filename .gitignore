@@ -1,6 +1,6 @@
 .idea/
 venv/
-.env
+**/.env
 **/*.pyc
 .DS_Store
 **/*.swp
