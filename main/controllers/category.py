@@ -47,10 +47,10 @@ def create_category(user_id):
     validate = category_input_schema.load(data)
     if len(validate.errors) > 0:
         return BadRequest(errors=validate.errors).to_json()
-    category = CategoryModel(user=user, **data)
+    category = CategoryModel(user=user, **validate.data)
     category.save_to_db()
     return jsonify({
-        'message': 'category with name {} has been successfully created'.format(data.get('name'))})
+        'message': 'category with name {} has been successfully created'.format(validate.data.get('name'))})
 
 
 @categories.route('/<int:category_id>', methods=['PUT'])

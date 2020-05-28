@@ -1,8 +1,6 @@
 from functools import wraps
-import json
 
 from flask import jsonify, Response, request
-from main.schemas.category import category_input_schema
 
 
 class BaseException(Response):
@@ -62,10 +60,10 @@ def validate_get_input(schema):
 
 
 def validate_post_input(schema):
-    def decorator(func):
+    def wrapper(func):
         @wraps(func)
         def inner(*args, **kwargs):
-            data = category_input_schema.load(request.get_json())
+            data = schema.load(request.get_json())
             validate = schema.load(data)
             if len(validate.errors) > 0:
                 import sys
@@ -73,4 +71,4 @@ def validate_post_input(schema):
                 return BadRequest(errors=validate.errors).to_json()
             return func(validate, *args, **kwargs)
         return inner
-    return decorator
+    return wrapper

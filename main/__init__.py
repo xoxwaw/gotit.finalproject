@@ -1,10 +1,11 @@
 import logging
 from importlib import import_module
+import os
 
 from flask import Flask
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv('envs/{}/.env'.format(os.getenv('ENV')))
 
 from main.controllers.category import categories
 from main.controllers.item import items
